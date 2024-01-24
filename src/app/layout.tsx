@@ -4,8 +4,8 @@ import './globals.css'
 // const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Emoji Date',
-  description: 'What emoji is today?',
+  title: 'fly.town',
+  description: 'What’s the FLYcast today?',
 }
 
 import localFont from 'next/font/local'
