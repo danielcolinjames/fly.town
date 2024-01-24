@@ -8,12 +8,12 @@ const redis = new Redis({
 
 async function getData() {
   const todayKey = new Date().toISOString().split('T')[0]; // Format: "%Y-%m-%d"
-  const flycast = await redis.get(todayKey);
+  const flycast: { count: number, timestamp: string } | null = await redis.get(todayKey);
 
   if (flycast === null) {
     return {
-      count: null,
-      timestamp: null
+      count: undefined,
+      timestamp: undefined
     }
   }
 
@@ -21,10 +21,10 @@ async function getData() {
 }
 
 export default async function Home() {
-  // const todayFlycast = 1361.73
-  // const hardcodedTimestamp = new Date('2023-03-01T12:00:00Z')
+  const data = await getData()
+  const count = data?.count ?? undefined
+  const timestamp = data?.timestamp ?? undefined
 
-  const { count, timestamp } = await getData()
   const utcDate = new Date(timestamp + ' UTC');
   const latestTime = utcDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/^0+/, '');
 
@@ -48,19 +48,19 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex w-full flex-col px-8">
-        {count === null ?
-          <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
-            <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 md:text-2xl">
-              No FLYcast submitted yet for {today}
-            </h2>
-          </div>
-          :
+        {count ?
           <div className="relative flex w-full flex-col justify-center gap-4 pt-20 md:pt-56">
             <h1 className="text-center text-6xl font-normal tracking-tighter sm:text-8xl">
               {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h1>
             <h2 className="text-center text-2xl font-thin tracking-tighter md:text-2xl">
               is the FLYcast as of {latestTime} on {today}
+            </h2>
+          </div>
+          :
+          <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
+            <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 md:text-2xl">
+              No FLYcast submitted yet for {today}
             </h2>
           </div>
         }
