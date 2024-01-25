@@ -17,7 +17,12 @@ async function getData() {
     }
   }
 
-  return flycast
+  const etTimestamp = new Date(flycast.timestamp);
+
+  return {
+    count: flycast.count,
+    timestamp: etTimestamp
+  };
 }
 
 export default async function Home() {
@@ -68,7 +73,10 @@ export default async function Home() {
 
       <div className="absolute bottom-0 px-4 pb-4">
         <p className="text-center text-sm text-gray-600">
-          This website is not endorsed by or associated with Blackbird Labs Inc., it‘s just made by a huge Blackbird fan (@dcj on Blackbird Discord)
+          fly.town is not endorsed by or associated with Blackbird Labs Inc.,
+        </p>
+        <p className="text-center text-sm text-gray-600">
+          just a huge Blackbird fan (@dcj on Discord and @dcwj on 𝕏)
         </p>
       </div>
     </main>
