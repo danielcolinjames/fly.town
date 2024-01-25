@@ -13,13 +13,22 @@ type flycastEntry = {
 
 function getEasternTimeDate() {
   const now = new Date();
-  const utc = now.getTime() + now.getTimezoneOffset() * 60000; // Convert to UTC
-  const easternTimeOffset = -5; // Eastern Time offset from UTC
-  return new Date(utc + (3600000 * easternTimeOffset));
+  console.log("Current time:", now.toString());
+
+  if (process.env.NODE_ENV === 'development') {
+    // Use local dev time locally
+    return now;
+  } else {
+    // Assume UTC in prod
+    const easternTimeOffset = -5; // Adjust to -4 during Daylight Saving Time
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000; // Convert to UTC
+    return new Date(utc + easternTimeOffset * 3600000);
+  }
 }
 
 async function getData() {
-  const todayKey = getEasternTimeDate().toISOString().split('T')[0]; // Format: "%Y-%m-%d"
+  const date = getEasternTimeDate();
+  const todayKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; // Format: "YYYY-MM-DD"
   const flycastArray: flycastEntry[] = await redis.get(todayKey) || [];
 
   if (flycastArray.length === 0) {
