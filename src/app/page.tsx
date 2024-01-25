@@ -6,21 +6,61 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_TOKEN ?? '',
 })
 
-async function getData() {
-  const todayKey = new Date().toISOString().split('T')[0]; // Format: "%Y-%m-%d"
-  const flycast: { count: number, timestamp: string } | null = await redis.get(todayKey);
+type flycastEntry = {
+  count: number,
+  timestamp: string
+}
 
-  if (flycast === null) {
+async function getData() {
+  const todayKey = new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
+  const flycastArray: flycastEntry[] = await redis.get(todayKey) || [];
+
+  if (flycastArray.length === 0) {
     return {
       count: undefined,
       timestamp: undefined
     }
   }
 
-  const etTimestamp = new Date(flycast.timestamp);
+  // Create an object to store the frequency of each count
+  const countFrequency: { [key: number]: number } = {};
+  flycastArray.forEach((flycast: flycastEntry) => {
+    if (countFrequency[flycast.count]) {
+      countFrequency[flycast.count]++;
+    } else {
+      countFrequency[flycast.count] = 1;
+    }
+  });
+
+  // Find the count with the highest frequency (mode)
+  let modeCount = undefined;
+  let maxFrequency = 0;
+  for (const count in countFrequency) {
+    if (countFrequency[count] > maxFrequency) {
+      maxFrequency = countFrequency[count];
+      modeCount = Number(count);
+    }
+  }
+
+  // Get latest timestamp
+  let latestTimestamp = new Date(0); // Epoch
+  flycastArray.map((flycast: flycastEntry) => {
+    const currentTimestamp = new Date(flycast.timestamp);
+    if (currentTimestamp > latestTimestamp) {
+      latestTimestamp = currentTimestamp;
+    }
+  });
+
+  const averageCount = modeCount;
+
+  const etTimestamp = latestTimestamp;
 
   return {
-    count: flycast.count,
+    count: averageCount,
     timestamp: etTimestamp
   };
 }
@@ -32,8 +72,6 @@ export default async function Home() {
 
   const utcDate = new Date(timestamp + ' UTC');
   const latestTime = utcDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/^0+/, '');
-
-  // const currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/^0+/, '')
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
   return (
@@ -58,9 +96,14 @@ export default async function Home() {
             <h1 className="text-center text-6xl font-normal tracking-tighter sm:text-8xl">
               {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h1>
-            <h2 className="text-center text-2xl font-thin tracking-tighter md:text-2xl">
-              is the FLYcast as of {latestTime} on {today}
-            </h2>
+            <div className='flex flex-col justify-center gap-2'>
+              <h2 className="text-center text-2xl font-thin tracking-tighter md:text-2xl">
+                is the FLYcast for today, {today}
+              </h2>
+              <p className="text-center text-sm text-gray-600">
+                Last updated at {latestTime} ET
+              </p>
+            </div>
           </div>
           :
           <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">

@@ -6,6 +6,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'fly.town',
   description: 'What’s the FLYcast today?',
+  openGraph: {
+    images: '/og.png',
+  },
 }
 
 import localFont from 'next/font/local'

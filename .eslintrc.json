@@ -1,8 +1,16 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:unicorn/recommended", "plugin:tailwindcss/recommended"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:tailwindcss/recommended"
+  ],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.json"],
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.json"
+      ],
       "parser": "@typescript-eslint/parser"
     }
   ]
