@@ -11,12 +11,15 @@ type flycastEntry = {
   timestamp: string
 }
 
+function getEasternTimeDate() {
+  const now = new Date();
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000; // Convert to UTC
+  const easternTimeOffset = -5; // Eastern Time offset from UTC
+  return new Date(utc + (3600000 * easternTimeOffset));
+}
+
 async function getData() {
-  const todayKey = new Intl.DateTimeFormat('en-CA', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).format(new Date());
+  const todayKey = getEasternTimeDate().toISOString().split('T')[0]; // Format: "%Y-%m-%d"
   const flycastArray: flycastEntry[] = await redis.get(todayKey) || [];
 
   if (flycastArray.length === 0) {
@@ -70,9 +73,21 @@ export default async function Home() {
   const count = data?.count ?? undefined
   const timestamp = data?.timestamp ?? undefined
 
-  const utcDate = new Date(timestamp + ' UTC');
-  const latestTime = utcDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/^0+/, '');
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  // Convert the latest timestamp from Redis data for display
+  let latestTime;
+  if (timestamp) {
+    latestTime = new Date(timestamp).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).replace(/^0+/, '');
+  }
+
+  const today = getEasternTimeDate().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  });
 
   return (
     <main className="flex min-h-screen flex-col items-center overflow-hidden">
