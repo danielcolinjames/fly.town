@@ -76,7 +76,7 @@ export default async function Home() {
           fly.town is not endorsed by or associated with Blackbird Labs Inc.,
         </p>
         <p className="text-center text-sm text-gray-600">
-          just a huge Blackbird fan (@dcj on Discord and @dcwj on 𝕏)
+          just made by a huge Blackbird fan (@dcj on Discord and @dcwj on 𝕏)
         </p>
       </div>
     </main>
