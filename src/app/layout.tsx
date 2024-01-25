@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'fly.town',
   description: 'What’s the FLYcast today?',
   openGraph: {
-    images: '/og.png',
+    images: 'https://fly.town/og.png',
   },
 }
 
