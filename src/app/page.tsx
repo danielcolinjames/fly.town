@@ -115,35 +115,34 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex w-full flex-col px-8">
-        {count ?
-          <div className="relative flex w-full flex-col justify-center gap-4 pt-20 md:pt-56">
-            <h1 className="text-center text-6xl font-normal tracking-tighter sm:text-8xl">
+        {count ? (
+          <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
+            <p className="text-center text-xs text-white md:text-lg">
+              Today<span className="text-gray-500">
+                , {today}
+              </span>
+              ’s FLYcast is
+            </p>
+            <h1 className="text-center text-5xl font-normal tracking-tighter md:text-8xl">
               {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h1>
-            <div className='flex flex-col justify-center gap-2'>
-              <h2 className="text-center text-2xl font-thin tracking-tighter md:text-2xl">
-                is the FLYcast for today, {today}
-              </h2>
-              <p className="text-center text-sm text-gray-600">
+            <div className='flex flex-col justify-center pt-1.5'>
+              <p className="text-center text-xs text-gray-600 md:text-base">
                 Last updated at {latestTime} ET
               </p>
             </div>
           </div>
-          :
+        ) : (
           <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
             <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 md:text-2xl">
               No FLYcast submitted yet for {today}
             </h2>
           </div>
-        }
+        )}
       </div>
-
       <div className="absolute bottom-0 px-4 pb-4">
         <p className="text-center text-sm text-gray-600">
-          fly.town is not endorsed by or associated with Blackbird Labs Inc.,
-        </p>
-        <p className="text-center text-sm text-gray-600">
-          just made by a huge Blackbird fan (@dcj on Discord and @dcwj on 𝕏)
+          fly.town is not endorsed by or associated with Blackbird Labs Inc., just made by a huge Blackbird fan (@dcj on Discord and @dcwj on 𝕏)
         </p>
       </div>
     </main>
