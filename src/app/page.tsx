@@ -116,18 +116,18 @@ export default async function Home() {
       </div>
       <div className="flex w-full flex-col px-8">
         {count ? (
-          <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
-            <p className="text-center text-xs text-white md:text-lg">
-              Today<span className="text-gray-500">
-                , {today}
-              </span>
-              ’s FLYcast is
+          <div className="relative flex w-full flex-col justify-center gap-2 pt-20 md:gap-1 md:pt-56">
+            <p className="text-center text-sm text-gray-600 md:text-base">
+              {today}
             </p>
-            <h1 className="text-center text-5xl font-normal tracking-tighter md:text-8xl">
+            <p className="text-center text-sm text-white md:text-lg">
+              The FLYcast today is
+            </p>
+            <h1 className="text-center text-5xl font-normal tracking-tighter sm:text-7xl md:text-8xl">
               {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h1>
-            <div className='flex flex-col justify-center pt-1.5'>
-              <p className="text-center text-xs text-gray-600 md:text-base">
+            <div className='flex flex-col justify-center'>
+              <p className="text-center text-sm text-gray-600 md:text-base">
                 Last updated at {latestTime} ET
               </p>
             </div>
@@ -142,7 +142,7 @@ export default async function Home() {
       </div>
       <div className="absolute bottom-0 px-4 pb-4">
         <p className="text-center text-sm text-gray-600">
-          fly.town is not endorsed by or associated with Blackbird Labs Inc., just made by a huge Blackbird fan (@dcj on Discord and @dcwj on 𝕏)
+          fly.town is not endorsed by or associated with Blackbird Labs Inc., just made by a huge Blackbird fan (@dcj on Discord / <a className="text-gray-500" href="https://x.com/dcwj" target="_blank" rel="noopener noreferrer">@dcwj on 𝕏</a>)
         </p>
       </div>
     </main>
