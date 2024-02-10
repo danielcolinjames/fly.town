@@ -1,0 +1,5 @@
+discord.py
+datetime
+upstash_redis
+python-dotenv
+pytz

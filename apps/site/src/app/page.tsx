@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { Redis } from '@upstash/redis';
+import { Footer } from "@/components/Footer";
+import { Navbar } from "@/components/Navbar";
 
 const redis = new Redis({
   url: 'https://light-bass-33631.upstash.io',
@@ -100,32 +102,27 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center overflow-hidden">
-      <div className="flex w-full flex-col px-4 sm:px-10">
-        {/* NavBar */}
-        <div className="z-10 flex w-full items-center justify-between pt-4 text-sm sm:pt-10">
-          <div className="flex items-center justify-center gap-2">
-            <Image src="/logo.png" className="w-8" height={23} width={19} alt="flytown logo" />
-            <p className="text-3xl">
-              fly
-              <span className='text-gray-400'>
-                .town
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>
+      <Navbar />
       <div className="flex w-full flex-col px-8">
         {count ? (
-          <div className="relative flex w-full flex-col justify-center gap-2 pt-20 md:gap-1 md:pt-56">
-            <p className="text-center text-sm text-gray-600 md:text-base">
+          <div className="relative flex w-full flex-col justify-center gap-5 pt-20 md:gap-10 md:pt-56">
+            <div className='flex flex-col justify-center gap-0 md:gap-2'>
+              <p className="text-center text-3xl text-white md:text-5xl">
+                Today's FLYcast
+              </p>
+              <p className="text-center text-lg text-gray-600 md:text-2xl">
               {today}
             </p>
-            <p className="text-center text-sm text-white md:text-lg">
-              The FLYcast today is
-            </p>
-            <h1 className="text-center text-5xl font-normal tracking-tighter sm:text-7xl md:text-8xl">
-              {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </h1>
+            </div>
+            <div className='flex flex-col justify-center gap-1 md:gap-2'>
+
+              <h1 className="text-center text-5xl font-medium tracking-tighter sm:text-7xl md:text-8xl">
+                {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </h1>
+              <p className="text-center text-lg text-white md:text-2xl">
+                FLY per check in
+              </p>
+            </div>
             <div className='flex flex-col justify-center'>
               <p className="text-center text-sm text-gray-600 md:text-base">
                 Last updated at {latestTime} ET
@@ -140,11 +137,7 @@ export default async function Home() {
           </div>
         )}
       </div>
-      <div className="absolute bottom-0 px-4 pb-4">
-        <p className="text-center text-sm text-gray-600">
-          fly.town is not endorsed by or associated with Blackbird Labs Inc., just made by a huge Blackbird fan (@dcj on Discord / <a className="text-gray-500" href="https://x.com/dcwj" target="_blank" rel="noopener noreferrer">@dcwj on 𝕏</a>)
-        </p>
-      </div>
+      <Footer />
     </main>
   )
 }
