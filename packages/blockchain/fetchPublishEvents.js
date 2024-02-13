@@ -7,7 +7,7 @@ const csvFilePath = path.join(__dirname, 'ipfs_hashes.csv');
 
 // Initialize CSV file with headers
 function initializeCSV() {
-    const header = 'IPFS Hash,Block Number,Transaction Hash\n';
+    const header = 'ipfsHash,blockNumber,transactionHash\n';
     try {
         // Check if the file exists and read the first line
         const firstLine = fs.readFileSync(csvFilePath, { encoding: 'utf8' }).split('\n')[0];

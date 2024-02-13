@@ -1,7 +1,9 @@
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const { connect, insertData } = require('../db/connect');
+const csv = require('csv-parser');
 
 async function fetchIPFSData(hash, blockNumber, transactionHash) {
     const url = `https://ipfs.io/ipfs/${hash}`;
@@ -62,4 +64,4 @@ async function fetchIPFSDataInBatches(filePath, batchSize = 50) {
       });
 }
 
-fetchIPFSDataInBatches('./publishEvents.csv').catch(console.error);
+fetchIPFSDataInBatches('./ipfs_hashes.csv').catch(console.error);
