@@ -118,14 +118,14 @@ export default async function Home() {
               <h1 className="text-center text-5xl font-medium tracking-tighter sm:text-7xl md:text-8xl">
                 {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </h1>
-              <p className="text-center text-lg text-white md:text-2xl">
-                FLY per check in
-              </p>
-            </div>
-            <div className='flex flex-col justify-center'>
-              <p className="text-center text-sm text-gray-600 md:text-base">
-                Last updated at {latestTime} ET
-              </p>
+              <div className='flex flex-col justify-center gap-4'>
+                <p className="text-center text-lg text-white md:text-2xl">
+                  FLY per check in
+                </p>
+                <p className="text-center text-sm text-gray-600 md:text-base">
+                  Last updated at {latestTime} ET
+                </p>
+              </div>
             </div>
           </div>
         ) : (
