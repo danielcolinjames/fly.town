@@ -61,9 +61,9 @@ export default async function LatestPage() {
         <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40">
             <Navbar />
             <div className="flex w-full flex-col px-8">
-                <div className="relative flex w-full flex-col justify-center gap-5 pt-20 md:gap-10 md:pt-32">
+                <div className="relative flex w-full flex-col justify-center gap-5 pt-14 md:gap-10 md:pt-32">
                     <div className='w-full md:w-auto md:max-w-5xl mx-auto'>
-                        <p className="text-left text-2xl text-white md:text-5xl pb-8">
+                        <p className="text-left text-4xl text-white md:text-5xl pb-10 md:pb-8">
                             Newest Restaurants
                         </p>
                         <div className='flex flex-col justify-center gap-8 md:gap-4'>
