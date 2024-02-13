@@ -29,7 +29,7 @@ const abi = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"strin
 const provider = new ethers.providers.JsonRpcProvider('https://mainnet.base.org');
 const contract = new ethers.Contract(ca, abi, provider);
 
-async function fetchPublishEventsInChunks(fromBlock, toBlock, chunkSize = 10000, delayDuration = 1000) {
+async function writePublishEventsToCSVInChunks(fromBlock, toBlock, chunkSize = 10000, delayDuration = 1000) {
     for (let startBlock = fromBlock; startBlock <= toBlock; startBlock += chunkSize + 1) {
         let endBlock = Math.min(startBlock + chunkSize, toBlock);
         console.log(`Fetching logs from block ${startBlock} to ${endBlock}`);
@@ -66,7 +66,6 @@ async function fetchPublishEventsInChunks(fromBlock, toBlock, chunkSize = 10000,
     console.log('Finished fetching and recording publish events.');
 }
 
-
 // const fromBlock = 2_637_424 // block of earliest txn on this contract
 // const toBlock = 10_457_709 // latest block as of 2/11/24
 
@@ -76,6 +75,6 @@ const toBlock = 10_499_109
 const chunkSize = 2000;
 
 initializeCSV();
-fetchPublishEventsInChunks(fromBlock, toBlock, chunkSize, 100)
+writePublishEventsToCSVInChunks(fromBlock, toBlock, chunkSize, 100)
     .then(console.log('————COMPLETE————'))
     .catch(console.error);

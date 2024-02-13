@@ -14,6 +14,15 @@ async function connect() {
     }
 }
 
+async function disconnect() {
+    try {
+        await client.close();
+        console.log("Disconnected from MongoDB");
+    } catch (error) {
+        console.error("Failed to disconnect from MongoDB", error);
+    }
+}
+
 async function insertData(collectionName, data) {
     try {
         const db = client.db("flytown");
@@ -25,4 +34,4 @@ async function insertData(collectionName, data) {
     }
 }
 
-module.exports = { connect, insertData };
+module.exports = { connect, disconnect, insertData };
