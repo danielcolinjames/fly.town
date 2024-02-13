@@ -1,0 +1,12 @@
+{
+    "name": "fly.town",
+    "private": true,
+    "workspaces": [
+      "apps/*",
+      "packages/*"
+    ],
+    "scripts": {
+        "site:dev": "yarn workspace fly.town dev"
+    }
+  }
+  

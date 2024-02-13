@@ -107,7 +107,7 @@ export default async function Home() {
         {count ? (
           <div className="relative flex w-full flex-col justify-center gap-5 pt-20 md:gap-10 md:pt-56">
             <div className='flex flex-col justify-center gap-0 md:gap-2'>
-              <p className="text-center text-3xl text-white md:text-5xl">
+              <p className="text-center text-2xl text-white md:text-5xl">
                 Today's FLYcast
               </p>
               <p className="text-center text-lg text-gray-600 md:text-2xl">
@@ -115,7 +115,6 @@ export default async function Home() {
             </p>
             </div>
             <div className='flex flex-col justify-center gap-1 md:gap-2'>
-
               <h1 className="text-center text-5xl font-medium tracking-tighter sm:text-7xl md:text-8xl">
                 {count.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </h1>
