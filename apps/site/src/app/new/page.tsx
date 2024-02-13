@@ -58,11 +58,11 @@ export default async function LatestPage() {
     const { recentFirstCheckIns } = await getData()
 
     return (
-        <main className="flex min-h-screen flex-col items-center overflow-hidden">
+        <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40">
             <Navbar />
             <div className="flex w-full flex-col px-8">
                 <div className="relative flex w-full flex-col justify-center gap-5 pt-20 md:gap-10 md:pt-32">
-                    <div className='max-w-5xl mx-auto'>
+                    <div className='w-full md:w-auto md:max-w-5xl mx-auto'>
                         <p className="text-left text-2xl text-white md:text-5xl pb-8">
                             Newest Restaurants
                         </p>

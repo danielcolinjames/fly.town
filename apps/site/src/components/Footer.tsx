@@ -1,7 +1,7 @@
 export const Footer = () => {
     return (
 
-        <div className="fixed bottom-0 px-4 py-4 bg-black-60 backdrop-blur-lg">
+        <div className="fixed w-full bottom-0 py-4 bg-black-60 backdrop-blur-lg">
             <p className="text-center text-xs text-gray-600">
                 fly.town is not endorsed by or associated with Blackbird Labs Inc.
             </p>
