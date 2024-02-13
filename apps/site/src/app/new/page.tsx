@@ -29,7 +29,7 @@ async function getData() {
                     $sort: { first_check_in_date: -1 }
                 },
                 {
-                    $limit: 10
+                    $limit: 50
                 },
                 {
                     $project: {
