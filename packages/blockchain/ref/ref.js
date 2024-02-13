@@ -37,5 +37,11 @@ function getPublishTransactionHashes(results) {
     return hashes
 }
 
+async function batchProcess(array, batchSize, processFunction) {
+    for (let i = 0; i < array.length; i += batchSize) {
+        const batch = array.slice(i, i + batchSize);
+        await Promise.all(batch.map(item => processFunction(item)));
+    }
+}
 
 processCSV('./all-txns.csv');
