@@ -23,7 +23,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<RestaurantFirstC
                     $sort: { first_check_in_date: -1 }
                 },
                 {
-                    $limit: 25
+                    $limit: 100
                 },
                 {
                     $project: {

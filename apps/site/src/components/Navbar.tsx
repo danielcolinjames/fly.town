@@ -18,9 +18,9 @@ export const Navbar = () => {
                     {/* <Link href="/" className="text-lg text-gray-500 active:text-white">
                         FLYcast
                     </Link> */}
-                    <Link href="/new" className="text-xl text-gray-500 active:text-red-500 hover:text-red-600 transition-all duration-250">
+                    {/* <Link href="/new" className="text-xl text-gray-500 active:text-red-500 hover:text-red-600 transition-all duration-250">
                         New
-                    </Link>
+                    </Link> */}
                 </div>
             </div>
         </div>
