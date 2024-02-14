@@ -1,12 +1,6 @@
-import { GetServerSideProps, NextPage } from 'next'
 import clientPromise from '../../lib/mongodb'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
-
-interface RestaurantFirstCheckIn {
-  restaurant_name: string
-  first_check_in_date: string
-}
 
 async function getData() {
   try {

@@ -62,7 +62,7 @@ async function fetchIPFSDataInBatches(filePath, batchSize = 50) {
         console.log(
           `Batch ${i / batchSize + 1}: Inserting ${batchData.length} records`
         )
-        await insertData('checkins', batchData) // Adjust with your actual collection name
+        await insertData('checkins', batchData)
 
         await new Promise(resolve => setTimeout(resolve, 500)) // Delay to avoid rate limiting
       }

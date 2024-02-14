@@ -2,7 +2,7 @@ require('dotenv').config()
 const ethers = require('ethers')
 const Redis = require('ioredis')
 const axios = require('axios')
-const { delay } = require('../../packages/utils')
+const { delay, slugify } = require('../../packages/utils')
 const { ca, contract, provider } = require('../../packages/blockchain/utils')
 const { connect, disconnect, insertData } = require('../../packages/db/connect')
 
@@ -38,6 +38,7 @@ async function fetchIPFSData(hash, blockNumber, transactionHash) {
       // Assuming 'records' is always an array; adjust based on actual data structure
       return response.data.records.map(record => ({
         ...record,
+        restaurant_id: slugify(record.restaurant_name),
         metadata: { blockNumber, transactionHash, ipfsHash: hash },
       }))
     } else {
@@ -159,6 +160,10 @@ async function fetchAndInsertIPFSData(newEvents) {
   if (allIPFSData.length > 0) {
     console.log(`Inserting ${allIPFSData.length} records into MongoDB`)
     await insertData('checkins', allIPFSData)
+    // Update the latest block height after successful processing
+    const latestBlockHeight = newEvents[newEvents.length - 1].blockNumber
+    await setLatestBlockHeight(latestBlockHeight)
+    console.log(`Updated latest block height to ${latestBlockHeight}.`)
   }
 
   await client.close()
@@ -184,11 +189,6 @@ async function main() {
       `${newEvents.length} new events fetched. Processing IPFS data...`
     )
     await fetchAndInsertIPFSData(newEvents)
-
-    // Update the latest block height after successful processing
-    const latestBlockHeight = newEvents[newEvents.length - 1].blockNumber
-    await setLatestBlockHeight(latestBlockHeight)
-    console.log(`Updated latest block height to ${latestBlockHeight}.`)
   } else {
     console.log('No new blockchain events to process.')
   }
