@@ -1,0 +1,4 @@
+node_modules
+build
+apps/site/.next
+apps/site/node_modules

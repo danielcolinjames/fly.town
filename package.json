@@ -1,12 +1,15 @@
 {
-    "name": "fly.town",
-    "private": true,
-    "workspaces": [
-      "apps/*",
-      "packages/*"
-    ],
-    "scripts": {
-        "site:dev": "yarn workspace fly.town dev"
-    }
+  "name": "fly.town",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "lfg": "yarn workspace fly.town dev",
+    "makepretty": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
   }
-  
+}
