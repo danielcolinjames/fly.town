@@ -34,4 +34,4 @@ async function insertData(collectionName, data) {
   }
 }
 
-module.exports = { connect, disconnect, insertData }
+module.exports = { client, connect, disconnect, insertData }

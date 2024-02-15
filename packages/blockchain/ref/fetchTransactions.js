@@ -65,9 +65,7 @@ async function main() {
 
 async function testIPFSDataWithSample(ipfsHashes, sampleSize = 100) {
   // Assuming `ipfsHashes` is an array of all your IPFS hash strings
-  const sampleHashes = ipfsHashes
-    .sort(() => 0.5 - Math.random())
-    .slice(0, sampleSize)
+  const sampleHashes = ipfsHashes.sort(() => 0.5 - Math.random()).slice(0, sampleSize)
   const data = await Promise.all(sampleHashes.map(fetchIPFSData))
 
   // Here, you can add custom logic to process `data` as needed
@@ -82,14 +80,9 @@ async function testIPFSDataWithSample(ipfsHashes, sampleSize = 100) {
 // testIPFSDataWithSample(ipfsHashes, 100).catch(console.error);
 
 async function sampleAndFetch() {
-  const allHashes = fs
-    .readFileSync('ipfs_hashes.txt', 'utf-8')
-    .split('\n')
-    .filter(Boolean)
+  const allHashes = fs.readFileSync('ipfs_hashes.txt', 'utf-8').split('\n').filter(Boolean)
   const sampleSize = 100
-  const sampledHashes = allHashes
-    .sort(() => 0.5 - Math.random())
-    .slice(0, sampleSize)
+  const sampledHashes = allHashes.sort(() => 0.5 - Math.random()).slice(0, sampleSize)
   const fetchedData = []
 
   for (let hash of sampledHashes) {

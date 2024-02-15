@@ -54,28 +54,18 @@ export default async function LatestPage() {
       <div className="flex w-full flex-col px-8">
         <div className="relative flex w-full flex-col justify-center gap-5 pt-14 md:gap-10 md:pt-32">
           <div className="w-full md:w-auto md:max-w-5xl mx-auto">
-            <p className="text-left text-4xl text-white md:text-5xl pb-10 md:pb-8">
-              Newest Restaurants
-            </p>
+            <p className="text-left text-4xl text-white md:text-5xl pb-10 md:pb-8">Newest Restaurants</p>
             <div className="flex flex-col justify-center gap-8 md:gap-4">
               {recentFirstCheckIns.map((checkIn: any, index: any) => (
-                <div
-                  key={index}
-                  className="flex flex-col md:flex-row justify-start gap-0 md:gap-4"
-                >
-                  <p className="text-left text-lg text-white md:text-xl">
-                    {checkIn.restaurant_name}
-                  </p>
+                <div key={index} className="flex flex-col md:flex-row justify-start gap-0 md:gap-4">
+                  <p className="text-left text-lg text-white md:text-xl">{checkIn.restaurant_name}</p>
                   <p className="text-left text-sm text-gray-600 md:text-xl">
                     First check in on{' '}
-                    {new Date(checkIn.first_check_in_date).toLocaleDateString(
-                      'en-US',
-                      {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      }
-                    )}
+                    {new Date(checkIn.first_check_in_date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
                   </p>
                 </div>
               ))}

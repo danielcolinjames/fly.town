@@ -44,9 +44,7 @@ const abi = [
     type: 'function',
   },
   {
-    inputs: [
-      { internalType: 'string', name: '_attestationURI', type: 'string' },
-    ],
+    inputs: [{ internalType: 'string', name: '_attestationURI', type: 'string' }],
     name: 'publish',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -68,9 +66,7 @@ const abi = [
   },
 ]
 
-const provider = new ethers.providers.JsonRpcProvider(
-  'https://mainnet.base.org'
-)
+const provider = new ethers.providers.JsonRpcProvider('https://mainnet.base.org')
 const contract = new ethers.Contract(ca, abi, provider)
 
 module.exports = {

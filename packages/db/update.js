@@ -46,9 +46,7 @@ async function exportCheckInsToCSV() {
     const csvStream = csv.format({ headers: true })
     const writableStream = fs.createWriteStream('checkins-with-metadata.csv')
 
-    writableStream.on('finish', () =>
-      console.log('Done writing check-ins to CSV.')
-    )
+    writableStream.on('finish', () => console.log('Done writing check-ins to CSV.'))
     csvStream.pipe(writableStream)
     await cursor.forEach(doc => {
       csvStream.write(doc)
@@ -98,18 +96,14 @@ async function updateCheckInsWithRestaurantId() {
           // every 100, wait 1 second and log
           if (checkin.check_in_id % 100 === 0) {
             await delay(1000)
-            console.log(
-              `Updating check in ${checkin.check_in_id} with restaurant_id: ${restaurant.restaurant_id}`
-            )
+            console.log(`Updating check in ${checkin.check_in_id} with restaurant_id: ${restaurant.restaurant_id}`)
           }
           await checkins.updateOne(
             { check_in_id: checkin.check_in_id },
             { $set: { restaurant_id: restaurant.restaurant_id } }
           )
         } else {
-          console.log(
-            `Check in ${checkin.check_in_id} already has the correct restaurant_id`
-          )
+          console.log(`Check in ${checkin.check_in_id} already has the correct restaurant_id`)
         }
       } else {
         console.log(`No restaurant found for slug: ${slug}`)

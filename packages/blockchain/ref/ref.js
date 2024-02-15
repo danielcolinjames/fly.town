@@ -30,9 +30,7 @@ async function processCSV(filePath) {
 function getPublishTransactionHashes(results) {
   const publishMethodName = 'Publish'
   // console.log(results[0])
-  const hashes = results
-    .filter(tx => tx.Method === publishMethodName)
-    .map(tx => tx.Txhash)
+  const hashes = results.filter(tx => tx.Method === publishMethodName).map(tx => tx.Txhash)
   console.log(hashes.length)
   console.log(hashes[0])
   return hashes

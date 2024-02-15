@@ -10,9 +10,7 @@ function initializeCSV() {
   const header = 'ipfsHash,blockNumber,transactionHash\n'
   try {
     // Check if the file exists and read the first line
-    const firstLine = fs
-      .readFileSync(csvFilePath, { encoding: 'utf8' })
-      .split('\n')[0]
+    const firstLine = fs.readFileSync(csvFilePath, { encoding: 'utf8' }).split('\n')[0]
     // If the file does not contain the header, write the header
     if (firstLine !== header.trim()) {
       fs.writeFileSync(csvFilePath, header, { flags: 'w' }) // 'w' flag to create or overwrite
@@ -67,9 +65,7 @@ const abi = [
     type: 'function',
   },
   {
-    inputs: [
-      { internalType: 'string', name: '_attestationURI', type: 'string' },
-    ],
+    inputs: [{ internalType: 'string', name: '_attestationURI', type: 'string' }],
     name: 'publish',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -91,22 +87,11 @@ const abi = [
   },
 ]
 
-const provider = new ethers.providers.JsonRpcProvider(
-  'https://mainnet.base.org'
-)
+const provider = new ethers.providers.JsonRpcProvider('https://mainnet.base.org')
 const contract = new ethers.Contract(ca, abi, provider)
 
-async function writePublishEventsToCSVInChunks(
-  fromBlock,
-  toBlock,
-  chunkSize = 10000,
-  delayDuration = 1000
-) {
-  for (
-    let startBlock = fromBlock;
-    startBlock <= toBlock;
-    startBlock += chunkSize + 1
-  ) {
+async function writePublishEventsToCSVInChunks(fromBlock, toBlock, chunkSize = 10000, delayDuration = 1000) {
+  for (let startBlock = fromBlock; startBlock <= toBlock; startBlock += chunkSize + 1) {
     let endBlock = Math.min(startBlock + chunkSize, toBlock)
     console.log(`Fetching logs from block ${startBlock} to ${endBlock}`)
 
@@ -135,10 +120,7 @@ async function writePublishEventsToCSVInChunks(
 
       await delay(delayDuration) // Delay to prevent rate limiting
     } catch (error) {
-      console.error(
-        `Error fetching logs for blocks ${startBlock} to ${endBlock}:`,
-        error
-      )
+      console.error(`Error fetching logs for blocks ${startBlock} to ${endBlock}:`, error)
     }
   }
 

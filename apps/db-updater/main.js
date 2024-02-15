@@ -31,7 +31,8 @@ async function setLatestBlockHeight(height) {
 }
 
 async function fetchIPFSData(hash, blockNumber, transactionHash) {
-  const url = `https://ipfs.io/ipfs/${hash}`
+  // const url = `https://ipfs.io/ipfs/${hash}`
+  const url = `https://cloudflare-ipfs.com/ipfs/${hash}`
   try {
     const response = await axios.get(url)
     if (response.status === 200 && response.data.records) {
@@ -42,9 +43,7 @@ async function fetchIPFSData(hash, blockNumber, transactionHash) {
         metadata: { blockNumber, transactionHash, ipfsHash: hash },
       }))
     } else {
-      console.error(
-        `Failed to fetch IPFS data for hash ${hash}: HTTP status ${response.status}`
-      )
+      console.error(`Failed to fetch IPFS data for hash ${hash}: HTTP status ${response.status}`)
       return []
     }
   } catch (error) {
@@ -70,25 +69,14 @@ async function fetchAndProcessNewBlockchainEvents() {
     console.log(`Fetched and processed ${newEvents.length} new events.`)
     return newEvents
   } else {
-    console.log(
-      'Could not determine the range for fetching new blockchain events.'
-    )
+    console.log('Could not determine the range for fetching new blockchain events.')
   }
 }
 
-async function fetchPublishEventsInChunks(
-  fromBlock,
-  toBlock,
-  chunkSize = 2000,
-  delayDuration = 1000
-) {
+async function fetchPublishEventsInChunks(fromBlock, toBlock, chunkSize = 2000, delayDuration = 1000) {
   let allEvents = [] // Initialize an array to hold all fetched events
 
-  for (
-    let startBlock = fromBlock;
-    startBlock <= toBlock;
-    startBlock += chunkSize + 1
-  ) {
+  for (let startBlock = fromBlock; startBlock <= toBlock; startBlock += chunkSize + 1) {
     let endBlock = Math.min(startBlock + chunkSize, toBlock)
     console.log(`Fetching logs from block ${startBlock} to ${endBlock}`)
 
@@ -126,10 +114,7 @@ async function fetchPublishEventsInChunks(
 
       await delay(delayDuration) // Delay to prevent rate limiting
     } catch (error) {
-      console.error(
-        `Error fetching logs for blocks ${startBlock} to ${endBlock}:`,
-        error
-      )
+      console.error(`Error fetching logs for blocks ${startBlock} to ${endBlock}:`, error)
     }
   }
 
@@ -147,11 +132,7 @@ async function fetchAndInsertIPFSData(newEvents) {
   // Flatten all IPFS data arrays into a single array for insertion
   const allIPFSData = []
   for (const event of newEvents) {
-    const ipfsData = await fetchIPFSData(
-      event.ipfsURI.replace('ipfs://', ''),
-      event.blockNumber,
-      event.transactionHash
-    )
+    const ipfsData = await fetchIPFSData(event.ipfsURI.replace('ipfs://', ''), event.blockNumber, event.transactionHash)
     if (ipfsData && ipfsData.length > 0) {
       allIPFSData.push(...ipfsData)
     }
@@ -185,9 +166,7 @@ function formatIPFSData(ipfsData, event) {
 async function main() {
   const newEvents = await fetchAndProcessNewBlockchainEvents()
   if (newEvents && newEvents.length > 0) {
-    console.log(
-      `${newEvents.length} new events fetched. Processing IPFS data...`
-    )
+    console.log(`${newEvents.length} new events fetched. Processing IPFS data...`)
     await fetchAndInsertIPFSData(newEvents)
   } else {
     console.log('No new blockchain events to process.')

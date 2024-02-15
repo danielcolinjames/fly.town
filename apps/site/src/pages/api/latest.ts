@@ -6,10 +6,7 @@ interface RestaurantFirstCheckIn {
   first_check_in_date: string
 }
 
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse<RestaurantFirstCheckIn[] | { error: string }>
-) => {
+export default async (req: NextApiRequest, res: NextApiResponse<RestaurantFirstCheckIn[] | { error: string }>) => {
   try {
     const client = await clientPromise
     const db = client.db('flytown')

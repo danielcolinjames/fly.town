@@ -46,9 +46,7 @@ const abi = [
     type: 'function',
   },
   {
-    inputs: [
-      { internalType: 'string', name: '_attestationURI', type: 'string' },
-    ],
+    inputs: [{ internalType: 'string', name: '_attestationURI', type: 'string' }],
     name: 'publish',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -101,9 +99,7 @@ async function processCSV(filePath) {
 function getPublishTransactionHashes(results) {
   const publishMethodName = 'Publish'
   // console.log(results[0])
-  const hashes = results
-    .filter(tx => tx.Method === publishMethodName)
-    .map(tx => tx.Txhash)
+  const hashes = results.filter(tx => tx.Method === publishMethodName).map(tx => tx.Txhash)
   console.log(hashes.length)
   console.log(hashes[0])
   return hashes
@@ -128,8 +124,7 @@ const publishMethodId = '0x243e280b'
 const publishMethodName = 'Publish'
 
 // I have no idea what format a "topic" is in
-const publishTopic =
-  '0xcb48f64979fb3b71e89dc0f98135b462fe71da71985c6975b34682c682326c33'
+const publishTopic = '0xcb48f64979fb3b71e89dc0f98135b462fe71da71985c6975b34682c682326c33'
 
 // fetchAndFilterTransactions(targetAddress)
 //     .then(publishTransactions => {

@@ -1,14 +1,8 @@
 const axios = require('axios')
 
-const publishTopic =
-  '0xcb48f64979fb3b71e89dc0f98135b462fe71da71985c6975b34682c682326c33'
+const publishTopic = '0xcb48f64979fb3b71e89dc0f98135b462fe71da71985c6975b34682c682326c33'
 
-async function fetchEventLogsByAddress(
-  address,
-  apiKey,
-  topic0 = publishTopic,
-  offset = 0
-) {
+async function fetchEventLogsByAddress(address, apiKey, topic0 = publishTopic, offset = 0) {
   const baseUrl = 'https://api.basescan.org/api'
   try {
     const response = await axios.get(baseUrl, {
