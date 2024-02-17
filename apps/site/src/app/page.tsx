@@ -215,7 +215,7 @@ export default async function Home() {
           <div className='flex flex-col justify-center items-center px-4'>
             <div className="relative h-auto w-full mx-auto sm:h-[400px] sm:w-[400px] flex flex-col justify-center gap-2 mt-10 sm:gap-2 sm:mt-16 bg-[#070707] border-[#202020] border text-white px-4 sm:px-20 py-8 sm:py-10 rounded-lg sm:rounded-full">
               <p className="text-center text-lg text-gray-600 sm:text-2xl">{today}</p>
-              <div className="flex flex-col justify-center gap-1 sm:gap-2">
+              <div className="flex flex-col items-center justify-center gap-1 sm:gap-2">
                 <h1 className="text-center text-white text-6xl font-medium tracking-tighter sm:text-8xl">
                   {count.toLocaleString(undefined, {
                     minimumFractionDigits: 0,
