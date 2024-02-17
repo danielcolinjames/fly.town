@@ -1,6 +1,39 @@
 import clientPromise from '../../lib/mongodb'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { createHmac } from 'node:crypto';
+
+function getToken(restaurantId: string): string {
+  const hmac = createHmac('sha256', 'my_secret');
+  hmac.update(JSON.stringify({ id: restaurantId }));
+  const token = hmac.digest('hex');
+  return token;
+}
+
+interface PageParams {
+  params: {
+    id: string;
+  };
+}
+
+async function getMetadataData(restaurantId: string): Promise<{ accessLevels: AccessLevelDetails[], restaurantName: string }> {
+  try {
+    const client = await clientPromise
+    const db = client.db('flytown')
+
+    const restaurantDoc = await db.collection('restaurants').findOne({ restaurant_id: restaurantId })
+    const accessLevels = restaurantDoc?.accessLevels || {}
+    const restaurantName = restaurantDoc?.full_name || 'Unknown Restaurant'
+
+    return { accessLevels, restaurantName }
+  }
+  catch (e) {
+    console.error(e)
+    return { accessLevels: [], restaurantName: 'Unknown Restaurant' }
+  }
+}
+
 
 async function getData(restaurantId: string): Promise<{
   restaurantName: string
@@ -126,8 +159,83 @@ interface AccessLevelDetails {
   image: string
 }
 
-export default async function RestaurantPage({ params }: { params: { restaurant: string } }) {
+type Props = {
+  params: { restaurant: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  // parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
   const restaurantId = params.restaurant
+  // console.log("metadata", restaurantName)
+
+  // const images = 
+  // const imageUrls = JSON.parse(searchParams.imageUrls as string)
+
+  // const numberOfImages = imageUrls.length
+  const { accessLevels, restaurantName } = await getMetadataData(restaurantId)
+  const accessLevelImages = Object.values(accessLevels).map(details => details.image);
+  // console.log("metadata", accessLevelImagesStringified)
+  const strippedAccessLevelImages = accessLevelImages.map(imageUrl => imageUrl.replace(/^https:\/\/images\.blackbird\.xyz/, ''));
+  const concatenatedImages = strippedAccessLevelImages.join(',');
+  // console.log("Stripped metadata", strippedAccessLevelImagesStringified)
+
+  // fetch data
+  // const product = await fetch(`https://.../${id}`).then((res) => res.json())
+
+  // optionally access and extend (rather than replace) parent metadata
+  // const previousImages = (await parent).openGraph?.images || []
+
+  // return {
+  //   title: product.title,
+  //   openGraph: {
+  //     images: ['/some-specific-page-image.jpg', ...previousImages],
+  //   },
+  // }
+
+  const rootUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://fly.town'
+
+  // export const metadata: Metadata = {
+  //   title: 'fly.town',
+  //   description: 'Your Blackbird tour guide',
+  //   openGraph: {
+  //     images: `${rootUrl}/api/og?restaurantName=fly.town&imageUrl=`,
+  //   },
+  // }
+
+  const ogUrl = `${rootUrl}/api/og?restaurantName=${restaurantName}&imageUrls=${concatenatedImages}`
+
+  console.log(ogUrl)
+  console.log('metadata', ogUrl)
+
+  return {
+    openGraph: {
+      title: 'fly.town',
+      description: 'Your Blackbird tour guide',
+      url: 'https://fly.town',
+      siteName: 'Fly Town',
+      images: ogUrl,
+      // {
+      //   url: 'https://nextjs.org/og-alt.png', // Must be an absolute URL
+      //   width: 1800,
+      //   height: 1600,
+      //   alt: 'My custom alt',
+      // },
+      locale: 'en_US',
+      type: 'website',
+    },
+  }
+}
+
+export default async function RestaurantPage({ params }: { params: { restaurant: string } }) {
+  // console.log(params);
+  // const restaurantId = params.restaurant
+  const { restaurant: restaurantId } = params;
+  const token = getToken(restaurantId);
+
   const {
     restaurantName,
     checkinCount,
@@ -140,6 +248,9 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
     accessLevels,
   } = await getData(restaurantId)
   // console.log(data)
+
+  // const accessLevelImages = Object.values(accessLevels).map(details => details.image);
+  // const accessLevelImagesJson = JSON.stringify(accessLevelImages);
 
   return (
     <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40 bg-[#0b0b0b]">

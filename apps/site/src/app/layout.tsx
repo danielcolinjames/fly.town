@@ -6,7 +6,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'fly.town',
-  description: 'What’s the FLYcast today?',
+  description: 'Your Blackbird tour guide',
   openGraph: {
     images: 'https://fly.town/og2.png',
   },
