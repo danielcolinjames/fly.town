@@ -1,0 +1,43 @@
+import React from 'react'
+import { RestaurantCard } from './RestaurantCard'
+
+export type Restaurant = {
+  restaurant_id: string
+  full_name: string
+  accessLevels: Record<string, { image: string }>
+  totalCheckins: number
+}
+
+interface RestaurantCardsContainerProps {
+  restaurants: Restaurant[] | null
+  title: string
+  subtitle: string
+}
+
+export const RestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> = ({ restaurants, title, subtitle }) => {
+  return (
+    <div className="flex flex-col justify-center gap-8 sm:gap-4">
+      {restaurants ? (
+        <div className="flex flex-col justify-center gap-8 sm:gap-4">
+          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-2xl mx-auto w-full mt-10 sm:mt-20">
+            <p className="text-center text-white text-light text-2xl sm:text-4xl flex flex-col pb-4">
+              {title}
+              <span className="text-xs text-gray-600 sm:text-base">{subtitle}</span>
+            </p>
+            <div className="flex flex-col justify-center gap-2 sm:gap-4 max-w-2xl mx-auto w-full">
+              {restaurants.map((restaurant, index) => (
+                <RestaurantCard key={index} restaurant={restaurant} index={index} />
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative flex w-full flex-col justify-center pt-20 sm:pt-56">
+          <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 sm:text-2xl">
+            No restaurant stats available
+          </h2>
+        </div>
+      )}
+    </div>
+  )
+}

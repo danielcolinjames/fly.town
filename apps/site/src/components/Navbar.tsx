@@ -12,7 +12,6 @@ export const Navbar = () => {
             <span className="text-gray-600">.town</span>
           </p>
         </Link>
-
       </div>
     </div>
   )

@@ -36,3 +36,23 @@ html.dark {
   background-color: #000; /* Dark background */
   color-scheme: dark;
 }
+
+/* Add this to your global CSS file */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-50%);
+  }
+}
+
+::-moz-selection {
+  /* Code for Firefox */
+  background: #f9b51e;
+}
+
+::selection {
+  background: #f9b51e;
+}
