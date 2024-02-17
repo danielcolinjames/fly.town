@@ -3,6 +3,8 @@ import { Redis } from '@upstash/redis'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import Link from 'next/link'
+import { Crown, Plane, PlaneIcon, PlaneLandingIcon, PlaneTakeoff } from 'lucide-react'
+import classNames from 'classnames'
 
 const redis = new Redis({
   url: 'https://light-bass-33631.upstash.io',
@@ -206,76 +208,66 @@ export default async function Home() {
   })
 
   return (
-    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40">
+    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40 bg-[#0b0b0b]">
       <Navbar />
-      <div className="flex w-full flex-col px-8">
+      <div className="flex w-full max-w-sm sm:max-w-full flex-col pl-2 pr-2 sm:px-8 ">
         {count ? (
-          <div className="relative flex w-full flex-col justify-center gap-5 pt-20 md:gap-10 md:pt-32">
-            <div className="flex flex-col justify-center gap-0 md:gap-2">
-              <p className="text-center text-2xl text-white md:text-5xl">Today’s FLYcast</p>
-              <p className="text-center text-lg text-gray-600 md:text-2xl">{today}</p>
-            </div>
-            <div className="flex flex-col justify-center gap-1 md:gap-2">
-              <h1 className="text-center text-5xl font-medium tracking-tighter sm:text-7xl md:text-8xl">
-                {count.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </h1>
-              <div className="flex flex-col justify-center gap-4">
-                <p className="text-center text-lg text-white md:text-2xl">FLY per check in</p>
-                <p className="text-center text-sm text-gray-600 md:text-base">Last updated at {latestTime} ET</p>
+          <div className='flex flex-col justify-center items-center px-4'>
+            <div className="relative h-auto w-full mx-auto sm:h-[400px] sm:w-[400px] flex flex-col justify-center gap-2 mt-10 sm:gap-2 sm:mt-16 bg-[#070707] border-[#202020] border text-white px-4 sm:px-20 py-8 sm:py-10 rounded-lg sm:rounded-full">
+              <p className="text-center text-lg text-gray-600 sm:text-2xl">{today}</p>
+              <div className="flex flex-col justify-center gap-1 sm:gap-2">
+                <h1 className="text-center text-white text-6xl font-medium tracking-tighter sm:text-8xl">
+                  {count.toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  })}
+                </h1>
+                <div className="flex flex-col justify-center gap-2">
+                  <p className="text-center text-lg text-white sm:text-xl flex flex-row items-center font-light justify-center">
+                    {/* <Plane className="h-5 w-5 text-white mr-2 mt-1.5" /> */}
+                    $FLY per check in today</p>
+                  <p className="text-center text-sm text-gray-600 sm:text-base">Last updated at {latestTime} ET</p>
+                </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
-            <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 md:text-2xl">
-              No FLYcast submitted yet for {today}
-            </h2>
+          <div className='flex flex-col justify-center items-center px-4'>
+            <div className="relative flex w-auto mx-auto flex-col justify-center mt-10 sm:mt-20 bg-[#070707] border-[#202020] border p-10 rounded-xl">
+              <h2 className="text-center text-xl italic tracking-tighter text-gray-500 sm:text-2xl">
+                No FLYcast submitted yet for {today}
+              </h2>
+            </div>
           </div>
         )}
-        <div className="flex flex-col justify-center gap-8 md:gap-4">
+        <div className="flex flex-col justify-center gap-8 sm:gap-4">
           {topRestaurants24h ? (
-            <div className="flex flex-col justify-center gap-8 md:gap-4">
-              <div className="flex flex-col justify-center gap-4 md:gap-2 max-w-2xl mx-auto w-full pt-24 md:pt-40">
-                <p className="text-center md:text-left text-lg text-gray-500 text-light md:text-4xl pb-4">
-                  Top Restaurants (Last 24 Hours)
+            <div className="flex flex-col justify-center gap-8 sm:gap-4">
+              <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-2xl mx-auto w-full mt-10 sm:mt-20">
+                <p className="text-center text-white text-light text-2xl sm:text-4xl flex flex-col pb-4">
+                  Top Restaurants
+                  <span className="text-xs text-gray-600 sm:text-base">Last 24h</span>
                 </p>
-                {topRestaurants24h.map((restaurant: any, index: any) => (
-                  <RestaurantCard key={index} restaurant={restaurant} index={index} />
-                ))}
+                <div className="flex flex-col justify-center gap-2 sm:gap-4 max-w-2xl mx-auto w-full">
+                  {topRestaurants24h.map((restaurant: any, index: any) => {
+                    // if (index === 0) {
+
+                    // }
+                    return (
+                      <RestaurantCard key={index} restaurant={restaurant} index={index} />
+                    )
+                  })}
+                </div>
               </div>
             </div>
           ) : (
-            <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
-              <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 md:text-2xl">
+            <div className="relative flex w-full flex-col justify-center pt-20 sm:pt-56">
+              <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 sm:text-2xl">
                 No restaurant stats available
               </h2>
             </div>
           )}
         </div>
-        {/* <div className="flex flex-col justify-center gap-8 md:gap-4">
-          {restaurants ? (
-            <div className="flex flex-col justify-center gap-8 md:gap-4">
-              <div className="flex flex-col justify-center gap-4 md:gap-2 max-w-2xl mx-auto w-full pt-24 md:pt-40">
-                <p className="text-left text-2xl text-gray-700 md:text-4xl pb-4">Top Restaurants</p>
-                {restaurants.map((restaurant: any, index: any) => {
-                  if (restaurant.totalCheckins < 100 || restaurant.full_name === null) {
-                    return null
-                  }
-                  return <RestaurantCard key={index} restaurant={restaurant} index={index} />
-                })}
-              </div>
-            </div>
-          ) : (
-            <div className="relative flex w-full flex-col justify-center pt-20 md:pt-56">
-              <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 md:text-2xl">
-                No restaurant stats available
-              </h2>
-            </div>
-          )}
-        </div> */}
       </div>
       <Footer />
     </main>
@@ -290,22 +282,25 @@ const RestaurantCard = ({ restaurant, index }: { restaurant: any; index: number 
   // Assuming `lowestTierImage` is the field for the lowest tier image URL
   // Define a more specific type for accessLevels
   const accessLevels: Record<string, AccessLevel> = restaurant.accessLevels || {}
-  const imageUrl = Object.values(accessLevels)[0]?.image || ''
+  const accessLevelsArray = Object.values(accessLevels);
+  const imageUrl = accessLevelsArray[accessLevelsArray.length - 1]?.image || '';
 
   // bg-[#0a0a0a] border-[#2A2A2A] border hover:border-white p-1
   return (
     <Link
       href={`/${restaurant.restaurant_id}`}
-      className="flex flex-col md:flex-row gap-3 md:gap-4 items-center justify-start hover:bg-[#0a0a0a] md:px-4 py-2 duration-200 transition-all rounded-xl"
+      className={classNames("flex flex-row gap-3 sm:gap-4 items-center justify-start hover:bg-[#040404] px-4 sm:px-4 py-2 duration-200 transition-all rounded-full", index === 0 ? "bg-[#050502] border border-[#181818] hover:bg-black" : "bg-[#0a0a0a] border-[#202020] border p-1")}
     >
-      <img src={imageUrl} alt={`${restaurant.full_name} Image`} className="w-16 h-16 object-cover rounded-full" />
-      <div className="flex flex-col items-center md:items-start">
-        <p className="text-white text-xl md:text-2xl">
-          <span className="text-gray-500 pr-2 md:pr-3">#{index + 1}</span>
-          {restaurant.full_name}
-        </p>
-        <p className="text-gray-600 text-base md:text-lg">{restaurant.totalCheckins.toLocaleString()} check ins</p>
+      <img src={imageUrl} alt={`${restaurant.full_name} Image`} className="w-10 sm:w-20 h-10 sm:h-20 object-cover rounded-full" />
+      <div className="flex flex-col items-start sm:items-start">
+        {/* <p className="text-white text-xl sm:text-2xl"> */}
+        <span className="hidden sm:flex text-gray-500 pr-2 sm:pr-3 flex-row">#{index + 1}</span>
+        <div className="flex items-center">
+          <span className='text-white text-xl sm:text-3xl'><span className="text-gray-600 shown sm:hidden">{index + 1}.{" "}</span>{restaurant.full_name}</span>
+          {index === 0 && <Crown className="-mt-10 h-6 w-6 rotate-[24deg] text-brandYellow" />}
+        </div>
+        <p className="text-gray-400 text-base sm:text-lg">{restaurant.totalCheckins.toLocaleString()} check ins</p>
       </div>
-    </Link>
+    </Link >
   )
 }

@@ -20,3 +20,19 @@ body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
+
+/* Ensures dark mode is always on */
+html {
+  background-color: #000; /* Or any dark background you prefer */
+}
+
+/* Applying the dark class to the root element */
+html {
+  display: block;
+}
+
+html.dark {
+  --tw-bg-opacity: 1;
+  background-color: #000; /* Dark background */
+  color-scheme: dark;
+}

@@ -142,7 +142,7 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
   // console.log(data)
 
   return (
-    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40">
+    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40 bg-[#0b0b0b]">
       <Navbar />
       <div className="flex w-full flex-col px-8">
         <div className="relative flex w-full flex-col justify-center gap-5 pt-14 md:gap-10 md:pt-32">
