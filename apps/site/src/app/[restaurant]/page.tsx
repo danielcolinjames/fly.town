@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     openGraph: {
-      title: '${restaurantName} - fly.town',
+      title: `${restaurantName} - fly.town`,
       description: `${restaurantName}'s profile on fly.town`,
       url: 'https://fly.town',
       siteName: 'fly.town',
