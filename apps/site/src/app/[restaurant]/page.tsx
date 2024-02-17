@@ -141,7 +141,7 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
                 ))}
               </div>
             </div>
-            <div className="text-gray-200 pt-16 sm:pt-20 max-w-3xl mx-auto px-8">
+            <div className="text-gray-200 pt-16 sm:pt-20 max-w-3xl mx-auto px-2 sm:px-8">
               <div className="grid sm:grid-cols-2 gap-4">
                 <StatCard
                   title="First check in"
@@ -168,7 +168,7 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
 const StatCard = ({ title, statText }: { title: string; statText: string }) => {
   return (
     <div
-      className="flex flex-col items-start justify-center px-4 sm:px-8 py-4 duration-200 transition-all rounded-full
+      className="flex flex-col items-start justify-center px-8 py-4 duration-200 transition-all rounded-full
     bg-[#0a0a0a] border-[#202020] border p-1"
     >
       <p className="text-gray-400 text-lg font-light">{title}</p>
