@@ -114,7 +114,7 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
                 First check in: {firstCheckinDate ? new Date(firstCheckinDate).toLocaleString() : 'N/A'}
               </p>
             </div>
-            <div className="py-4 sm:py-10 bg-[#040404] w-full">
+            <div className="py-4 sm:py-10 bg-[#040404] border border-[#202020] w-full">
               <p className="text-left sm:pb-5 max-w-3xl mx-auto px-8 sm:text-center text-light text-2xl sm:text-2xl flex flex-col pb-4 text-gray-400">
                 Membership Tiers
               </p>
