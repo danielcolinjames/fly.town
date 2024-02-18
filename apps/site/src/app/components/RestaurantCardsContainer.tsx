@@ -16,10 +16,10 @@ interface RestaurantCardsContainerProps {
 
 export const RestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> = ({ restaurants, title, subtitle }) => {
   return (
-    <div className="flex flex-col justify-center gap-8 sm:gap-4">
+    <div className="flex flex-col justify-center gap-8 sm:gap-4 px-4 sm:px-0">
       {restaurants ? (
         <div className="flex flex-col justify-center gap-8 sm:gap-4">
-          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-2xl mx-auto w-full mt-10 sm:mt-20">
+          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-sm sm:max-w-xl mx-auto w-full mt-10 sm:mt-20">
             <p className="text-center text-white text-light text-2xl sm:text-4xl flex flex-col pb-4">
               {title}
               <span className="text-xs text-gray-600 sm:text-base">{subtitle}</span>

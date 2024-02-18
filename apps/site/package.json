@@ -12,6 +12,7 @@
     "@upstash/redis": "^1.28.2",
     "@vercel/analytics": "^1.1.2",
     "classnames": "^2.5.1",
+    "framer-motion": "^11.0.5",
     "lucide-react": "^0.330.0",
     "next": "14.0.3",
     "react": "^18",

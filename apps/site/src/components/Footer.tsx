@@ -2,7 +2,7 @@ export const Footer = () => {
   return (
     <div className="flex flex-row items-center justify-center fixed w-full bottom-0 py-1 bg-black/60 backdrop-blur-lg gap-2">
       <a
-        className="text-[#76BEFB] text-[8px] sm:text-xs opacity-30"
+        className="text-brandYellow text-[8px] sm:text-xs opacity-30"
         href="https://x.com/dcwj"
         target="_blank"
         rel="noopener noreferrer"

@@ -21,7 +21,7 @@ type flycastEntry = {
 
 function getEasternTimeDate() {
   const now = new Date()
-  console.log('Current time:', now.toString())
+  // console.log('Current time:', now.toString())
 
   if (process.env.NODE_ENV === 'development') {
     // Use local dev time locally
@@ -181,9 +181,9 @@ export default async function Home() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col justify-center items-center px-4">
-            <div className="relative flex w-auto mx-auto flex-col justify-center mt-10 sm:mt-20 bg-[#070707] border-[#202020] border p-10 rounded-xl">
-              <h2 className="text-center text-xl italic tracking-tighter text-gray-500 sm:text-2xl">
+          <div className="flex flex-col justify-center items-center">
+            <div className="relative flex mx-auto flex-col justify-center mt-10 sm:mt-20 bg-[#070707] border-[#202020] border-y w-full px-8 py-8 sm:py-10">
+              <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
                 No FLYcast submitted yet for {today}
               </h2>
             </div>

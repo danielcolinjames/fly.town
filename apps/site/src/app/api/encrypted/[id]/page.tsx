@@ -15,7 +15,7 @@ interface PageParams {
 }
 
 export default function Page({ params }: PageParams) {
-  console.log(params)
+  // console.log(params)
   const { id } = params
   const token = getToken(id)
 

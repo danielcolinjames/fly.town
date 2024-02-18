@@ -7,6 +7,9 @@ import Image from 'next/image'
 import { CalendarDays, Clock, Clock1, Flag, GroupIcon, LucideIcon, Nfc, PersonStanding, Stamp } from 'lucide-react'
 import { formatDate } from '../lib/utils'
 import { ReactNode } from 'react'
+import Link from 'next/link'
+import { MembershipsSection } from './components/MembershipsSection'
+import { RestaurantTitleSection } from './components/RestaurantTitleSection'
 
 async function getMetadataData(
   restaurantId: string
@@ -71,87 +74,23 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
     accessLevels,
   } = await getData(restaurantId)
 
-  const totalWidth = 836
-  const totalHeight = 630
-  const numberOfImages = Object.keys(accessLevels).length
-
-  const originalWidth = 343
-  const originalHeight = 490
-  const originalAspectRatio = originalWidth / originalHeight
-
-  // Set imageHeight to match the totalHeight of the canvas
-  let imageHeight = totalHeight // Ensure minimum image height is the canvas height
-  // Calculate imageWidth based on the original aspect ratio
-  let imageWidth = imageHeight * originalAspectRatio
-
-  let marginLeft = 0
-
-  if (numberOfImages === 1) {
-    imageWidth = totalWidth
-    imageHeight = imageWidth / originalAspectRatio
-  } else if (numberOfImages === 2) {
-    // if total width of images is less than total width of canvas, we need to increase the width of the images to be equal to the proportion of the total canvas width they should take up
-    imageWidth = totalWidth / numberOfImages
-    imageHeight = imageWidth / originalAspectRatio
-  } else if (numberOfImages > 2) {
-    // Calculate the total width that all images would normally occupy without overlap
-    const totalImageWidthWithoutOverlap = imageWidth * numberOfImages
-    // Calculate the required overlap to make the images fit exactly within the totalWidth
-    const requiredOverlapPerImage = (totalImageWidthWithoutOverlap - totalWidth) / (numberOfImages - 1)
-    marginLeft = -requiredOverlapPerImage // Apply as negative margin to each image except the first
-  }
-  const iconSize = 36
+  const iconSize = 24
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-40 bg-[#0b0b0b]">
+    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-10 sm:pb-12 bg-[#0b0b0b]">
       <Navbar />
       <div className="flex w-full flex-col">
         <div className="relative flex w-full flex-col justify-center gap-5 pt-14 sm:gap-10 sm:pt-32">
           <div className="w-full sm:max-w-8xl mx-auto">
-            <div className="flex flex-col justify-center gap-2 pb-10 sm:pb-8 max-w-3xl mx-auto px-8">
-              <p className="text-left text-5xl text-white sm:text-7xl">{restaurantName}</p>
-              <div className="flex flex-col justify-center gap-0">
-                <p className="text-left text-xl text-white sm:text-2xl">
-                  {checkinCount.toLocaleString()} lifetime check ins
-                </p>
-                <p className="text-sm text-gray-600">
-                  First check in: {firstCheckinDate ? new Date(firstCheckinDate).toLocaleString() : 'N/A'}
-                </p>
-              </div>
-            </div>
-            <div className="py-4 sm:py-10 bg-[#040404] border-y border-[#202020] w-full">
-              <p className="text-left sm:pb-5 max-w-3xl mx-auto px-8 sm:text-center text-light text-2xl sm:text-2xl flex flex-col pb-4 text-gray-400">
-                Membership Tiers
-              </p>
-              <div className="flex flex-col md:flex-row justify-center items-start px-8 gap-8 sm:gap-4 w-full">
-                {Object.entries(accessLevels).map(([level, details], index) => (
-                  <div key={index} className="rounded-lg shadow gap-4">
-                    <Image
-                      src={details.image}
-                      alt={`Access Level ${level}`}
-                      className="rounded-lg"
-                      width={imageWidth}
-                      height={imageHeight}
-                    />
-                    <p className="text-gray-700 justify-center text-left sm:text-center hover:text-brandYellow mt-1 transition-all duration-200">
-                      Artist: {details.imageArtist}
-                    </p>
-                    <div className="pt-0 sm:pt-2 gap-2">
-                      <div className="flex gap-2 justify-start sm:justify-center">
-                        <p className="text-gray-400 text-lg sm:text-xl font-light">{level}</p>
-                        <p className="text-white text-lg sm:text-xl font-semibold">{details.memberStatus}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="text-gray-200 pt-16 sm:pt-20 max-w-3xl mx-auto px-2 sm:px-8">
+            <RestaurantTitleSection
+              restaurantId={restaurantId}
+              restaurantName={restaurantName}
+              checkinCount={checkinCount}
+            />
+            <MembershipsSection accessLevels={accessLevels} restaurantId={restaurantId} />
+            <div className="text-gray-200 pt-8 sm:pt-10 max-w-3xl mx-auto px-2 sm:px-8">
               <div className="grid sm:grid-cols-2 gap-4">
-                <StatCard
-                  title="First check in"
-                  statText={firstCheckinDate ? formatDate(firstCheckinDate) : 'N/A'}
-                >
+                <StatCard title="First check in" statText={firstCheckinDate ? formatDate(firstCheckinDate) : 'N/A'}>
                   <Flag size={iconSize} />
                 </StatCard>
                 <StatCard
@@ -160,16 +99,16 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
                 >
                   <Nfc size={iconSize} />
                 </StatCard>
-                <StatCard title="Last 24h check ins" statText={checkinsLast24h.toLocaleString()} >
+                <StatCard title="Last 24h check ins" statText={checkinsLast24h.toLocaleString()}>
                   <Clock size={iconSize} />
                 </StatCard>
-                <StatCard title="Last 30d check ins" statText={checkinsLastMonth.toLocaleString()} >
+                <StatCard title="Last 30d check ins" statText={checkinsLastMonth.toLocaleString()}>
                   <CalendarDays size={iconSize} />
                 </StatCard>
-                <StatCard title="Number of members" statText={numberOfMemberships.toLocaleString()} >
+                <StatCard title="Members" statText={numberOfMemberships.toLocaleString()}>
                   <PersonStanding size={iconSize} />
                 </StatCard>
-                <StatCard title="Check ins per member" statText={averageCheckinsPerMembership.toFixed(2)} >
+                <StatCard title="Check ins per member" statText={averageCheckinsPerMembership.toFixed(2)}>
                   <Stamp size={iconSize} />
                 </StatCard>
               </div>
@@ -182,17 +121,18 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
   )
 }
 
-const StatCard = ({ title, statText, children }: { title: string; statText: string, children: ReactNode }) => {
+const StatCard = ({ title, statText, children }: { title: string; statText: string; children: ReactNode }) => {
   return (
     <div
-      className="flex flex-row gap-5 items-center justify-start px-8 py-4 duration-200 transition-all rounded-full
-      bg-[#0a0a0a] border-[#202020] border">
-      <div className='text-gray-400'>
-        {children}
+      className="flex flex-row gap-4 items-center justify-start px-4 py-4 duration-200 transition-all rounded-full
+      bg-[#0a0a0a] border-[#202020] border"
+    >
+      <div className="p-4 bg-[#181818] rounded-full">
+        <div className="text-gray-400">{children}</div>
       </div>
       <div className="flex flex-col items-start justify-center">
-        <p className="text-gray-400 text-lg font-light">{title}</p>
-        <p className="text-white text-lg font-semibold">{statText}</p>
+        <p className="text-gray-400 text-base font-light">{title}</p>
+        <p className="text-white text-base font-semibold">{statText}</p>
       </div>
     </div>
   )
