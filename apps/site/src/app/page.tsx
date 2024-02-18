@@ -157,23 +157,22 @@ export default async function Home() {
   })
 
   return (
-    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40 bg-[#0b0b0b]">
+    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-10 sm:pb-20 bg-[#0b0b0b]">
       <Navbar />
-      <div className="flex w-full max-w-sm sm:max-w-full flex-col pl-2 pr-2 sm:px-8 ">
+      <div className="flex w-full flex-col">
         {count ? (
-          <div className="flex flex-col justify-center items-center px-4">
-            <div className="relative h-auto w-full mx-auto sm:h-[400px] sm:w-[400px] flex flex-col justify-center gap-2 mt-10 sm:gap-2 sm:mt-16 bg-[#070707] border-[#202020] border text-white px-4 sm:px-20 py-8 sm:py-10 rounded-lg sm:rounded-full">
+          <div className="flex flex-col justify-center items-center mt-10">
+            <div className="relative h-auto flex flex-col justify-center gap-0 bg-[#070707] border-[#202020] border-y w-full text-white py-8 sm:py-10">
               <p className="text-center text-lg text-gray-600 sm:text-2xl">{today}</p>
-              <div className="flex flex-col items-center justify-center gap-1 sm:gap-2">
+              <div className="flex flex-col items-center justify-center gap-1">
                 <h1 className="text-center text-white text-6xl font-medium tracking-tighter sm:text-8xl">
                   {count.toLocaleString(undefined, {
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 2,
                   })}
                 </h1>
-                <div className="flex flex-col justify-center gap-2">
+                <div className="flex flex-col justify-center gap-0">
                   <p className="text-center text-lg text-white sm:text-xl flex flex-row items-center font-light justify-center">
-                    {/* <Plane className="h-5 w-5 text-white mr-2 mt-1.5" /> */}
                     $FLY per check in today
                   </p>
                   <p className="text-center text-sm text-gray-600 sm:text-base">Last updated at {latestTime} ET</p>

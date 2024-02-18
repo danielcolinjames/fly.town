@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 }
 
 import localFont from 'next/font/local'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 // Font files can be colocated inside of `app`
 const satoshiFont = localFont({
@@ -31,6 +32,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="msapplication-TileColor" content="#000000" />
       <meta name="theme-color" content="#000000" />
       <body>
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+          <GoogleAnalytics ga_id=
+            {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        ) : null}
         {children}
         <Analytics />
       </body>
