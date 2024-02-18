@@ -37,8 +37,14 @@ export const RestaurantCard = ({ restaurant, index }: { restaurant: any; index: 
           <div className="flex items-center">
             <span className="text-white text-xl sm:text-3xl">
               <span className="text-gray-600 shown whitespace-nowrap">{index + 1}. </span>
-              <motion.span layoutId={`restaurant-name-${restaurant.restaurant_id}`} transition={{ type: 'spring' }}
-              >{restaurant.full_name}</motion.span>
+              {/* <motion.span */}
+              <span
+              //  layoutId={`restaurant-name-${restaurant.restaurant_id}`} 
+              //  transition={{ type: 'spring' }}
+              >
+                {restaurant.full_name}
+                {/* </motion.span> */}
+              </span>
             </span>
             {index === 0 && <Crown className="-mt-10 h-6 w-6 rotate-[24deg] text-brandYellow" />}
           </div>
