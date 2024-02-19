@@ -77,7 +77,7 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
   const iconSize = 24
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-10 sm:pb-12 bg-[#0b0b0b]">
+    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-14 sm:pb-24 bg-[#0b0b0b] relative">
       <Navbar />
       <div className="flex w-full flex-col">
         <div className="relative flex w-full flex-col justify-center gap-5 pt-14 sm:gap-10 sm:pt-32">

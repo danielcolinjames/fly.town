@@ -49,7 +49,7 @@ export default async function LatestPage() {
   const { recentFirstCheckIns } = await getData()
 
   return (
-    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40">
+    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-10 sm:pb-20 relative">
       <Navbar />
       <div className="flex w-full flex-col px-8">
         <div className="relative flex w-full flex-col justify-center gap-5 pt-14 md:gap-10 md:pt-32">

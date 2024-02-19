@@ -1,8 +1,9 @@
-'use client'
+// 'use client'
 import classNames from 'classnames'
 import { Crown } from 'lucide-react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 type AccessLevel = {
   image: string
@@ -28,14 +29,21 @@ export const RestaurantCard = ({ restaurant, index }: { restaurant: any; index: 
       // layoutId={`restaurant-card-${restaurant.restaurant_id}`}
       >
         {/* <motion.img */}
-        <img
+        <Image
+          src={imageUrl}
+          alt="Restaurant Image"
+          width={56}
+          height={56}
+          className="w-auto min-w-10 tiny:min-w-14 sm:min-w-20 h-10 tiny:h-14 sm:h-20 object-cover rounded-full bg-black"
+        />
+        {/* <Image
           src={imageUrl}
           className="min-w-14 sm:min-w-20 h-14 sm:h-20 object-cover rounded-full bg-black"
         // layoutId={`membership-image-${imageUrl}`}
-        />
+        /> */}
         <div className="flex flex-col items-start sm:items-start">
           <div className="flex items-center">
-            <span className="text-white text-xl sm:text-3xl">
+            <span className="text-white text-sm tiny:text-xl sm:text-3xl">
               <span className="text-gray-600 shown whitespace-nowrap">{index + 1}. </span>
               {/* <motion.span */}
               <span
@@ -48,7 +56,7 @@ export const RestaurantCard = ({ restaurant, index }: { restaurant: any; index: 
             </span>
             {index === 0 && <Crown className="-mt-10 h-6 w-6 rotate-[24deg] text-brandYellow" />}
           </div>
-          <p className="text-gray-400 text-base sm:text-lg">{restaurant.totalCheckins.toLocaleString()} check ins</p>
+          <p className="text-gray-400 text-sm tiny:text-base sm:text-lg">{restaurant.totalCheckins.toLocaleString()} check ins</p>
         </div>
         {/* </motion.div> */}
       </div>

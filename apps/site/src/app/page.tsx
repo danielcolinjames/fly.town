@@ -157,7 +157,7 @@ export default async function Home() {
   })
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-10 sm:pb-20 bg-[#0b0b0b]">
+    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-10 sm:pb-40 bg-[#0b0b0b] relative">
       <Navbar />
       <div className="flex w-full flex-col">
         {count ? (

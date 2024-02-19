@@ -59,7 +59,7 @@ export default async function Home() {
   const restaurants = await getRestaurantsSortedByCheckins()
 
   return (
-    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-40">
+    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-10 sm:pb-40 relative">
       <Navbar />
       <RestaurantCardsContainer
         restaurants={restaurants}
