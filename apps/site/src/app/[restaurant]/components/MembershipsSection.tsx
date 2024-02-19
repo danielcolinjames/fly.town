@@ -1,7 +1,6 @@
-'use client'
-
+// 'use client'
 import { AccessLevelDetails } from '../getData'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 
 export const MembershipsSection = ({ accessLevels, restaurantId }: { accessLevels: AccessLevelDetails | {}, restaurantId: string }) => {
   const totalWidth = 836
@@ -35,17 +34,22 @@ export const MembershipsSection = ({ accessLevels, restaurantId }: { accessLevel
   }
 
   return (
-    <motion.div className="py-4 sm:py-10 bg-[#040404] border-y border-[#202020] w-full" layoutId={`restaurant-card-${restaurantId}`}>
+    // <motion.div
+    <div
+      className="py-4 sm:py-10 bg-[#040404] border-y border-[#202020] w-full"
+    // layoutId={`restaurant-card-${restaurantId}`}
+    >
       <p className="text-left sm:pb-5 max-w-3xl mx-auto px-8 sm:text-center text-light text-2xl sm:text-2xl flex flex-col pb-4 text-gray-400">
         Membership Tiers
       </p>
       <div className="flex flex-col md:flex-row justify-center items-start px-8 gap-8 sm:gap-4 w-full">
         {Object.entries(accessLevels).map(([level, details], index, { length }) => (
           <div key={index} className="rounded-lg shadow gap-4">
-            <motion.img
+            {/* <motion.img */}
+            <img
               src={details.image}
               alt={`Access Level ${level}`}
-              layoutId={index === length - 1 ? `membership-image-${details.image}` : ''}
+              // layoutId={index === length - 1 ? `membership-image-${details.image}` : ''}
               className="rounded-lg"
               width={imageWidth}
               height={imageHeight}
@@ -62,6 +66,7 @@ export const MembershipsSection = ({ accessLevels, restaurantId }: { accessLevel
           </div>
         ))}
       </div>
-    </motion.div>
+      {/* </motion.div> */}
+    </div>
   )
 }

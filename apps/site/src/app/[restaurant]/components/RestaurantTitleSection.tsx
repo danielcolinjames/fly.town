@@ -1,6 +1,6 @@
-'use client'
+// 'use client'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion'
 
 export const RestaurantTitleSection = ({
   restaurantName,
@@ -19,12 +19,14 @@ export const RestaurantTitleSection = ({
       >
         &larr; Top 10
       </Link>
-      <motion.span
-        layoutId={`restaurant-name-${restaurantId}`}
+      {/* <motion.span */}
+      <span
+        // layoutId={`restaurant-name-${restaurantId}`}
         className="text-left text-5xl text-white sm:text-7xl"
       >
         {restaurantName}
-      </motion.span>
+        {/* </motion.span> */}
+      </span>
       <div className="flex flex-col justify-center gap-0">
         <p className="text-left text-xl text-gray-600 sm:text-2xl">
           {checkinCount.toLocaleString()} lifetime check ins
