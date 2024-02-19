@@ -5,10 +5,11 @@ import Link from 'next/link'
 import { RestaurantCard } from '../components/RestaurantCard'
 import { Restaurant, RestaurantCardsContainer } from '../components/RestaurantCardsContainer'
 import { ignoredRestaurantIds } from '../lib/ignored'
+import { SITE_DB_NAME } from '@/lib/utils'
 
 async function getCheckinCountsByRestaurant() {
   const client = await clientPromise
-  const db = client.db('flytown')
+  const db = client.db(SITE_DB_NAME)
 
   const checkinCounts = await db
     .collection('checkins')
@@ -28,7 +29,7 @@ async function getCheckinCountsByRestaurant() {
 
 async function getRestaurantsSortedByCheckins() {
   const client = await clientPromise
-  const db = client.db('flytown')
+  const db = client.db(SITE_DB_NAME)
 
   const checkinCounts = await getCheckinCountsByRestaurant()
 

@@ -1,11 +1,12 @@
 import clientPromise from '../../lib/mongodb'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
+import { SITE_DB_NAME } from '@/lib/utils'
 
 async function getData() {
   try {
     const client = await clientPromise
-    const db = client.db('flytown')
+    const db = client.db(SITE_DB_NAME)
 
     const recentFirstCheckIns = await db
       .collection('checkins')

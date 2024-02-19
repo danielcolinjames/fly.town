@@ -25,7 +25,8 @@ async function disconnect() {
 
 async function insertData(collectionName, data) {
   try {
-    const db = client.db('flytown')
+    const { DB_NAME } = require('../db/globals')
+    const db = client.db(DB_NAME)
     const collection = db.collection(collectionName)
     const result = await collection.insertMany(data)
     console.log(`${result.insertedCount} documents were inserted`)

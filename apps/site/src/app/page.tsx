@@ -8,6 +8,7 @@ import classNames from 'classnames'
 import { RestaurantCard } from './components/RestaurantCard'
 import { Restaurant, RestaurantCardsContainer } from './components/RestaurantCardsContainer'
 import { getTopRestaurantsLast24Hours } from './data/restaurants'
+import { SITE_DB_NAME } from '@/lib/utils'
 
 const redis = new Redis({
   url: 'https://light-bass-33631.upstash.io',
@@ -36,7 +37,7 @@ function getEasternTimeDate() {
 
 async function getCheckinCountsByRestaurant() {
   const client = await clientPromise
-  const db = client.db('flytown')
+  const db = client.db(SITE_DB_NAME)
 
   const checkinCounts = await db
     .collection('checkins')
@@ -56,7 +57,8 @@ async function getCheckinCountsByRestaurant() {
 
 async function getRestaurantsSortedByCheckins() {
   const client = await clientPromise
-  const db = client.db('flytown')
+  const { DB_NAME } = require('../db/globals')
+  const db = client.db(DB_NAME)
 
   const checkinCounts = await getCheckinCountsByRestaurant()
 

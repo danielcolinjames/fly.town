@@ -2,8 +2,9 @@ require('dotenv').config()
 const axios = require('axios')
 const { delay, slugify } = require('../utils')
 const { client, disconnect } = require('../db/connect')
+const { DB_NAME } = require('../db/globals')
 
-const db = client.db('flytown')
+const db = client.db(DB_NAME)
 
 async function fetchNFTData(id) {
   const url = `https://nft-metadata.blackbird.xyz/v1/${id}.json`
@@ -15,6 +16,22 @@ async function fetchNFTData(id) {
     return null
   }
 }
+// const sample = {
+//   name: 'Unregular Bakery: Tier 1',
+//   description: '',
+//   image: 'https://images.blackbird.xyz/384911cb-5c96-4c75-aa03-d96940878fde/343_490.png',
+//   attributes: [
+//     { trait_type: 'accessLevel', value: 1 },
+//     { trait_type: 'artist', value: 'Mika Yokota' },
+//     { trait_type: 'expirationDate', value: 1739924422, display_type: 'date' },
+//     { trait_type: 'generation', value: 1 },
+//     { trait_type: 'memberStatus', value: 'Tier 1' },
+//     { trait_type: 'mintDate', value: 1708302022, display_type: 'date' },
+//     { trait_type: 'restaurantLocations', value: 'Union Square, 124 4th Ave, New York, NY 10003' },
+//     { trait_type: 'restaurantName', value: 'Unregular Bakery' },
+//   ],
+// }
+
 async function processNFTData(nftData) {
   const restaurantName = nftData.attributes.find(attr => attr.trait_type === 'restaurantName').value
   const restaurant_id = slugify(restaurantName)

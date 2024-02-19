@@ -13,4 +13,6 @@ function slugify(text) {
     .replace(/-+$/, '') // Trim - from end of text
 }
 
+export const DB_NAME = 'flytown'
+
 module.exports = { delay, slugify }

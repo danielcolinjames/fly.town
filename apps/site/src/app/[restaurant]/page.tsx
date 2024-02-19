@@ -10,13 +10,14 @@ import { ReactNode } from 'react'
 import Link from 'next/link'
 import { MembershipsSection } from './components/MembershipsSection'
 import { RestaurantTitleSection } from './components/RestaurantTitleSection'
+import { SITE_DB_NAME } from '@/lib/utils'
 
 async function getMetadataData(
   restaurantId: string
 ): Promise<{ accessLevels: AccessLevelDetails[]; restaurantName: string }> {
   try {
     const client = await clientPromise
-    const db = client.db('flytown')
+    const db = client.db(SITE_DB_NAME)
 
     const restaurantDoc = await db.collection('restaurants').findOne({ restaurant_id: restaurantId })
     const accessLevels = restaurantDoc?.accessLevels || {}

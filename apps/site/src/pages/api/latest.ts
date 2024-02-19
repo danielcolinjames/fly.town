@@ -1,3 +1,4 @@
+import { SITE_DB_NAME } from '@/lib/utils'
 import clientPromise from '../../lib/mongodb'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -9,7 +10,7 @@ interface RestaurantFirstCheckIn {
 export default async (req: NextApiRequest, res: NextApiResponse<RestaurantFirstCheckIn[] | { error: string }>) => {
   try {
     const client = await clientPromise
-    const db = client.db('flytown')
+    const db = client.db(SITE_DB_NAME)
 
     const recentFirstCheckins = await db
       .collection('checkins')

@@ -1,3 +1,4 @@
+import { SITE_DB_NAME } from '@/lib/utils'
 import clientPromise from '../../lib/mongodb'
 
 export interface AccessLevelDetails {
@@ -20,7 +21,7 @@ export async function getData(restaurantId: string): Promise<{
 }> {
   try {
     const client = await clientPromise
-    const db = client.db('flytown')
+    const db = client.db(SITE_DB_NAME)
 
     // Calculate time frames for the last 24 hours and last month
     const now = new Date()
