@@ -1,80 +1,64 @@
 import clientPromise from '../../lib/mongodb'
-import { Footer } from '@/components/Footer'
-import { Navbar } from '@/components/Navbar'
 import { SITE_DB_NAME } from '@/lib/utils'
+import { NewRestaurantCardsContainer, Restaurant, RestaurantCardsContainer } from '../components/RestaurantCardsContainer'
+
+
 
 async function getData() {
   try {
     const client = await clientPromise
     const db = client.db(SITE_DB_NAME)
 
-    const recentFirstCheckIns = await db
-      .collection('checkins')
+    const restaurantsSortedByFirstCheckIn = await db
+      .collection('checkIns')
       .aggregate([
         {
           $group: {
-            _id: '$restaurant_name',
-            first_check_in_date: { $min: '$created_at' },
+            _id: '$restaurantId',
+            firstCheckInDate: { $min: '$createdAt' },
           },
         },
         {
-          $sort: { first_check_in_date: -1 },
+          $sort: { firstCheckInDate: -1 },
         },
         {
-          $limit: 100,
+          $lookup: {
+            from: 'restaurants',
+            localField: '_id',
+            foreignField: 'restaurantId',
+            as: 'restaurantDetails',
+          },
+        },
+        {
+          $unwind: '$restaurantDetails',
         },
         {
           $project: {
             _id: 0,
-            restaurant_name: '$_id',
-            first_check_in_date: 1,
+            restaurantId: '$_id',
+            restaurantName: '$restaurantDetails.restaurantName',
+            firstCheckInDate: 1,
+            accessLevels: '$restaurantDetails.accessLevels', // Assuming this field exists
+            totalCheckins: '$restaurantDetails.totalCheckins' // Assuming this field exists or you can calculate it        
           },
         },
       ])
       .toArray()
-
     return {
-      recentFirstCheckIns: JSON.parse(JSON.stringify(recentFirstCheckIns)),
+      recentFirstCheckIns: restaurantsSortedByFirstCheckIn || [],
     }
   } catch (e) {
     console.error(e)
     return {
-      props: {
-        recentFirstCheckIns: [],
-      },
+      recentFirstCheckIns: [],
     }
   }
 }
-
 export default async function LatestPage() {
-  const { recentFirstCheckIns } = await getData()
+  const data = await getData()
+  const recentFirstCheckIns = data.recentFirstCheckIns as Restaurant[]
 
   return (
-    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-10 sm:pb-20 relative">
-      <Navbar />
-      <div className="flex w-full flex-col px-8">
-        <div className="relative flex w-full flex-col justify-center gap-5 pt-14 md:gap-10 md:pt-32">
-          <div className="w-full md:w-auto md:max-w-5xl mx-auto">
-            <p className="text-left text-4xl text-white md:text-5xl pb-10 md:pb-8">Newest Restaurants</p>
-            <div className="flex flex-col justify-center gap-8 md:gap-4">
-              {recentFirstCheckIns.map((checkIn: any, index: any) => (
-                <div key={index} className="flex flex-col md:flex-row justify-start gap-0 md:gap-4">
-                  <p className="text-left text-lg text-white md:text-xl">{checkIn.restaurant_name}</p>
-                  <p className="text-left text-sm text-gray-600 md:text-xl">
-                    First check in on{' '}
-                    {new Date(checkIn.first_check_in_date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      <Footer />
-    </main>
+    <NewRestaurantCardsContainer restaurants={recentFirstCheckIns} title="Newest restaurants" subtitle="By recency of first check in" />
   )
 }

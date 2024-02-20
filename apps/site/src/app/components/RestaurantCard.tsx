@@ -1,11 +1,8 @@
-// 'use client'
 import classNames from 'classnames'
 import { Crown } from 'lucide-react'
 import Link from 'next/link'
-// import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Restaurant } from './RestaurantCardsContainer'
-import { css } from '@emotion/react';
 
 export type AccessLevel = {
   image: string
@@ -15,13 +12,11 @@ export type AccessLevel = {
   whiteText: boolean
 }
 
-export const RestaurantCard = ({ restaurant, index }: { restaurant: Restaurant; index: number }) => {
+export const RestaurantCard = ({ restaurant, index, subtitle }: { restaurant: Restaurant; index: number, subtitle?: string }) => {
   const accessLevels: Record<string, AccessLevel> = restaurant.accessLevels || {}
   const accessLevelsArray = Object.values(accessLevels)
   const imageUrl = accessLevelsArray[accessLevelsArray.length - 1]?.image
-  const accentColor = accessLevelsArray[accessLevelsArray.length - 1].accent
-
-  // const styles = { "&:hover": { background:  } }
+  const accentColor = accessLevelsArray[accessLevelsArray.length - 1]?.accent
 
   return (
     <Link href={`/${restaurant.restaurantId}`}>
@@ -65,7 +60,7 @@ export const RestaurantCard = ({ restaurant, index }: { restaurant: Restaurant; 
             {index === 0 && <Crown className="-mt-10 h-6 w-6 rotate-[24deg] text-brandYellow" />}
           </div>
           <p className="text-gray-400 text-sm tiny:text-base sm:text-lg">
-            {restaurant.totalCheckins.toLocaleString()} check ins
+            {subtitle ? subtitle : `${restaurant?.totalCheckins?.toLocaleString()} check ins`}
           </p>
         </div>
         {/* </motion.div> */}

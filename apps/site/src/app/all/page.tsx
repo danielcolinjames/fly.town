@@ -60,14 +60,10 @@ export default async function Home() {
   const restaurants = await getRestaurantsSortedByCheckins()
 
   return (
-    <main className="flex min-h-screen flex-col items-center overflow-hidden pb-10 sm:pb-40 relative">
-      <Navbar />
-      <RestaurantCardsContainer
-        restaurants={restaurants}
-        title="All Restaurants"
-        subtitle="Sorted by lifetime check ins"
-      />
-      <Footer />
-    </main>
+    <RestaurantCardsContainer
+      restaurants={restaurants}
+      title="All restaurants"
+      subtitle="Sorted by lifetime check ins"
+    />
   )
 }

@@ -5,11 +5,11 @@ import Link from 'next/link'
 export const RestaurantTitleSection = ({
   restaurantName,
   restaurantId,
-  checkinCount,
+  subtitle,
 }: {
   restaurantName: string
   restaurantId: string
-  checkinCount: number
+  subtitle: string
 }) => {
   return (
     <div className="flex flex-col gap-2 pb-10 sm:pb-8 max-w-3xl mx-auto px-8">
@@ -29,7 +29,7 @@ export const RestaurantTitleSection = ({
       </span>
       <div className="flex flex-col justify-center gap-0">
         <p className="text-left text-xl text-gray-600 sm:text-2xl">
-          {checkinCount.toLocaleString()} lifetime check ins
+          {subtitle}
         </p>
       </div>
     </div>

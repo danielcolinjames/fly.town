@@ -9,6 +9,7 @@ import { MembershipsSection } from './components/MembershipsSection'
 import { RestaurantTitleSection } from './components/RestaurantTitleSection'
 import { SITE_DB_NAME } from '@/lib/utils'
 import { StatCard } from '../../components/StatCard'
+import { formatDistanceToNow } from 'date-fns'
 
 async function getMetadataData(
   restaurantId: string
@@ -72,6 +73,7 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
   }
   const {
     restaurantName,
+    location,
     checkinCount,
     firstCheckinDate,
     mostRecentCheckinDate,
@@ -82,50 +84,46 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
     accessLevels,
   } = restaurantData
 
-
   const iconSize = 24
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-14 sm:pb-24 bg-[#0b0b0b] relative">
-      <Navbar />
-      <div className="flex w-full flex-col">
-        <div className="relative flex w-full flex-col justify-center gap-5 pt-14 sm:gap-10 sm:pt-32">
-          <div className="w-full sm:max-w-8xl mx-auto">
-            <RestaurantTitleSection
-              restaurantId={restaurantId}
-              restaurantName={restaurantName}
-              checkinCount={checkinCount}
-            />
-            <MembershipsSection accessLevels={accessLevels} restaurantId={restaurantId} />
-            <div className="text-gray-200 pt-8 sm:pt-10 max-w-3xl mx-auto px-2 sm:px-8">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <StatCard title="First check in" statText={firstCheckinDate ? formatDate(firstCheckinDate) : 'N/A'}>
-                  <Flag size={iconSize} />
-                </StatCard>
-                <StatCard
-                  title="Most recent check in"
-                  statText={mostRecentCheckinDate ? formatDate(mostRecentCheckinDate) : 'N/A'}
-                >
-                  <Nfc size={iconSize} />
-                </StatCard>
-                <StatCard title="Last 24h check ins" statText={checkinsLast24h.toLocaleString()}>
-                  <Clock size={iconSize} />
-                </StatCard>
-                <StatCard title="Last 30d check ins" statText={checkinsLastMonth.toLocaleString()}>
-                  <CalendarDays size={iconSize} />
-                </StatCard>
-                <StatCard title="Members" statText={numberOfMemberships.toLocaleString()}>
-                  <PersonStanding size={iconSize} />
-                </StatCard>
-                <StatCard title="Check ins per member" statText={averageCheckinsPerMembership.toFixed(2)}>
-                  <Stamp size={iconSize} />
-                </StatCard>
-              </div>
+    <div className="flex w-full flex-col">
+      <div className="relative flex w-full flex-col justify-center gap-5 pt-14 sm:gap-10 sm:pt-32">
+        <div className="w-full sm:max-w-8xl mx-auto">
+          <RestaurantTitleSection
+            restaurantId={restaurantId}
+            restaurantName={restaurantName}
+            subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
+          />
+          <p className="text-center text-gray-400 text-sm sm:text-base pb-4 sm:pb-8">{location}</p>
+          <MembershipsSection accessLevels={accessLevels} restaurantId={restaurantId} />
+          <div className="text-gray-200 pt-8 sm:pt-10 max-w-3xl mx-auto px-2 sm:px-8">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <StatCard title="First check in" statText={firstCheckinDate ? formatDistanceToNow(new Date(firstCheckinDate), { addSuffix: true }) : 'N/A'}>
+                <Flag size={iconSize} />
+              </StatCard>
+              <StatCard
+                title="Most recent check in"
+                statText={mostRecentCheckinDate ? formatDistanceToNow(new Date(mostRecentCheckinDate), { addSuffix: true }) : 'N/A'}
+              >
+                <Nfc size={iconSize} />
+              </StatCard>
+              <StatCard title="Last 24h check ins" statText={checkinsLast24h.toLocaleString()}>
+                <Clock size={iconSize} />
+              </StatCard>
+              <StatCard title="Last 30d check ins" statText={checkinsLastMonth.toLocaleString()}>
+                <CalendarDays size={iconSize} />
+              </StatCard>
+              <StatCard title="Members" statText={numberOfMemberships.toLocaleString()}>
+                <PersonStanding size={iconSize} />
+              </StatCard>
+              <StatCard title="Check ins per member" statText={averageCheckinsPerMembership.toFixed(2)}>
+                <Stamp size={iconSize} />
+              </StatCard>
             </div>
           </div>
         </div>
       </div>
-      <Footer />
-    </main>
+    </div>
   )
 }

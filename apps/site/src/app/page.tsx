@@ -178,34 +178,30 @@ export default async function Home() {
   const iconSize = 24
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-10 sm:pb-40 bg-[#0b0b0b] relative">
-      <Navbar />
-      <div className="flex w-full flex-col">
-        <div className="flex flex-col justify-center items-center mt-10">
-          <div className="relative h-auto bg-[#070707] border-[#202020] border-y w-full text-white py-8 sm:py-10">
-            <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
-              {count ? (
-                <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} />
-              ) : (
-                <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
-                  No FLYcast submitted yet for {today}
-                </h2>
-              )}
-              <div className="flex flex-row gap-4 w-full px-8">
-                <StatCard title="Members" statText={totalMembershipsCount.toLocaleString()}>
-                  <PersonStanding size={iconSize} />
-                </StatCard>
-                <StatCard title="Check ins" statText={(totalCheckins + 5043).toLocaleString()}>
-                  <Nfc size={iconSize} />
-                </StatCard>
-              </div>
+    <div className="flex w-full flex-col pb-14 sm:pb-24">
+      <div className="flex flex-col justify-center items-center mt-10">
+        <div className="relative h-auto bg-[#070707] border-[#202020] border-y w-full text-white py-8 sm:py-10">
+          <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
+            {count ? (
+              <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} />
+            ) : (
+              <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
+                No FLYcast submitted yet for {today}
+              </h2>
+            )}
+            <div className="flex flex-row gap-4 w-full px-8">
+              <StatCard title="Members" statText={totalMembershipsCount.toLocaleString()}>
+                <PersonStanding size={iconSize} />
+              </StatCard>
+              <StatCard title="Check ins" statText={(totalCheckins + 5043).toLocaleString()}>
+                <Nfc size={iconSize} />
+              </StatCard>
             </div>
           </div>
         </div>
-        <RestaurantCardsContainer restaurants={topRestaurants24h} title="Top 10" subtitle="Last 24h" />
       </div>
-      <Footer />
-    </main>
+      <RestaurantCardsContainer restaurants={topRestaurants24h} title="Top 10" subtitle="Last 24h" />
+    </div>
   )
 }
 

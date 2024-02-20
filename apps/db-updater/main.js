@@ -77,7 +77,7 @@ main().catch(console.error)
 async function findHighestTokenID() {
   const currentBlockNumber = await provider.getBlockNumber()
   const chunkSize = 2000
-  const fromBlock = currentBlockNumber - 1000 // look at last 1000 blocks, should be enough
+  const fromBlock = currentBlockNumber - 10_000 // look at last 10,000 blocks, should be enough to find one?
   const toBlock = currentBlockNumber
 
   // const singleSignature = ethers.utils.id('TransferSingle(address,address,address,uint256,uint256)')
@@ -182,11 +182,23 @@ async function fetchNFTMetadataInBatches(fromTokenId, toTokenId, batchSize = 100
       }
     }
   }
+  // Assuming highestMembershipId is the highest ID already fetched,
+  // and you're interested in the range from fromTokenId to toTokenId.
 
-  const effectiveRange = toTokenId - Math.max(fromTokenId, highestMembershipId)
-  console.log(
-    `Fetched metadata for ${effectiveRange} IDs, NFTs, skipping ${toTokenId - fromTokenId - effectiveRange} existing IDs`
-  )
+  // First, ensure highestMembershipId is accounted for in the range calculation properly.
+  // The +1 accounts for inclusive range; adjust logic as per your data's inclusivity/exclusivity.
+  const effectiveStartId = Math.max(fromTokenId, highestMembershipId + 1)
+
+  // Ensure the calculation results in a non-negative value for effectiveRange.
+  // This represents the number of new IDs we're interested in fetching.
+  const effectiveRange = Math.max(0, toTokenId - effectiveStartId + 1)
+
+  // Calculate the number of IDs being skipped because they're already accounted for.
+  // This adjusts based on the effective start position.
+  const skippedIds = effectiveStartId - fromTokenId
+
+  console.log(`Fetched metadata for ${effectiveRange} IDs, NFTs, skipping ${skippedIds} existing IDs`)
+
   return metadata
 }
 
@@ -289,15 +301,9 @@ async function findUniqueRestaurants(nftMetadata) {
     }
   }
 
-  // Handle errors, if any
-  if (errors.length > 0) {
-    console.warn('Errors encountered:', errors)
-    await insertData(DB_NAME, 'uniqueRestaurantErrors', errors)
-  }
-
   const formattedRestaurants = Array.from(uniqueRestaurants.values())
 
-  console.log('Unique restaurants:', formattedRestaurants.length)
+  console.log('New unique restaurants:', formattedRestaurants.length)
   return formattedRestaurants
 }
 
@@ -503,7 +509,7 @@ async function enhanceRestaurants() {
 
   for (const restaurantId of uniqueRestaurants) {
     const restaurant = await db.collection('restaurants').findOne({ restaurantId })
-
+    console.log(`Adding tier level counts to restaurant ${restaurantId}`)
     if (!restaurant || !restaurant.accessLevels) continue
 
     const updates = {} // Object to hold all update operations
@@ -517,6 +523,7 @@ async function enhanceRestaurants() {
           if (vibrantColor) {
             const hexColor = `#${rgbHex(vibrantColor[0], vibrantColor[1], vibrantColor[2])}`
             const whiteText = shouldBeWhiteText(hexColor)
+            console.log(`Setting accent color for level ${level} in restaurant ${restaurantId} to ${hexColor}`)
             // Prepare update operations for accent and whiteText
             updates[`accessLevels.${level}.whiteText`] = whiteText
             updates[`accessLevels.${level}.accent`] = hexColor

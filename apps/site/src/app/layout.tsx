@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 
 import localFont from 'next/font/local'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
+import { Navbar } from '@/components/Navbar'
+import { Footer } from '@/components/Footer'
 
 // Font files can be colocated inside of `app`
 const satoshiFont = localFont({
@@ -34,7 +36,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        {children}
+        <main className="min-h-screen bg-[#0b0b0b] relative pb-10 sm:pb-20">
+          <Navbar />
+          {children}
+          <Footer />
+        </main>
         <SpeedInsights />
         <Analytics />
       </body>

@@ -13,6 +13,7 @@ export interface AccessLevelDetails {
 export async function getData(restaurantId: string): Promise<{
   restaurantName: string
   checkinCount: number
+  location: string
   recentCheckins: any[]
   accessLevels: AccessLevelDetails
   firstCheckinDate: Date | null
@@ -54,6 +55,7 @@ export async function getData(restaurantId: string): Promise<{
     const restaurantDoc = await db.collection('restaurants').findOne({ restaurantId: restaurantId })
     const restaurantName = restaurantDoc?.restaurantName || ''
     const accessLevels = restaurantDoc?.accessLevels || {}
+    const location = restaurantDoc?.location || ''
 
     const checkinCount = checkins.length
     const recentCheckins = checkins.slice(0, 20) // Get the most recent 20 check-ins
@@ -83,6 +85,7 @@ export async function getData(restaurantId: string): Promise<{
     return {
       restaurantName,
       checkinCount,
+      location,
       recentCheckins,
       accessLevels,
       firstCheckinDate,
