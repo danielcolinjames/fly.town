@@ -14,10 +14,9 @@ export async function GET(request: Request) {
   // console.log('imageUrls', imageUrls);
 
   const fullImageUrls = imageUrls.map((url: string) => `https://images.blackbird.xyz${url}`)
-  // console.log('Full Image URLs', fullImageUrls);
 
   if (!restaurantName) {
-    return new ImageResponse(<>Visit with &quot;?username=vercel&quot;</>, {
+    return new ImageResponse(<>fly.town</>, {
       width: 1200,
       height: 630,
     })

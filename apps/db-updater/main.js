@@ -504,19 +504,51 @@ async function fetchIPFSData(hash, blockNumber, transactionHash) {
 
 // 9)
 async function enhanceRestaurants() {
+  await initializeTiers()
   const db = await database()
   const uniqueRestaurants = await db.collection('memberships').distinct('restaurantId')
 
   for (const restaurantId of uniqueRestaurants) {
     console.log(`Adding tier level counts to restaurant ${restaurantId}`)
     const restaurant = await db.collection('restaurants').findOne({ restaurantId })
+    const uniqueAccessLevels = await db
+      .collection('memberships')
+      .distinct('accessLevel', { restaurantId: restaurantId })
     if (!restaurant || !restaurant.accessLevels) continue
 
     // Update colors for each tier level
-    await updateTierLevelColors(restaurantId, restaurant.accessLevels)
+    await updateTierLevelColors(restaurantId, uniqueAccessLevels)
 
     // Update counts for each tier level
     await updateTierLevelCounts(restaurantId)
+  }
+}
+async function initializeTiers() {
+  const db = await database()
+  const uniqueRestaurantIds = await db.collection('memberships').distinct('restaurantId')
+
+  for (const restaurantId of uniqueRestaurantIds) {
+    // Fetch all memberships for this restaurantId
+    const memberships = await db.collection('memberships').find({ restaurantId }).toArray()
+
+    // Organize access levels by level
+    let accessLevels = {}
+    for (const membership of memberships) {
+      const { accessLevel, image, imageArtist, memberStatus } = membership
+      const levelKey = `accessLevels.${accessLevel}`
+
+      // If this is the first membership of its access level, initialize the tier
+      if (!accessLevels[accessLevel]) {
+        accessLevels[accessLevel] = { image, imageArtist, memberStatus }
+      }
+    }
+
+    // Update the restaurant document with the organized access levels
+    const updateResult = await db
+      .collection('restaurants')
+      .updateOne({ restaurantId }, { $set: { accessLevels } }, { upsert: true })
+
+    console.log(`Updated restaurantId ${restaurantId} with access levels:`, updateResult)
   }
 }
 
@@ -525,28 +557,24 @@ async function updateTierLevelColors(restaurantId, accessLevels) {
 
   for (const [level, details] of Object.entries(accessLevels)) {
     console.log(`Processing image for restaurantId: ${restaurantId}, level: ${level}`)
+    let tempMissingFieldsObject = {} // Object to hold missing fields from membership
     if (!details.image) {
       console.log(`No image available for restaurantId: ${restaurantId}, level: ${level}`)
 
       // Fetch a membership that matches the restaurantId and the specific accessLevel
       const membership = await db.collection('memberships').findOne({
         restaurantId,
-        accessLevel: parseInt(level), // Ensure the level is correctly typed as an integer if necessary
+        accessLevel: parseInt(level),
       })
 
       if (membership) {
         console.log(`Found membership for restaurantId: ${restaurantId}, level: ${level}`)
         // Update the details object with the information from the matching membership
-        details.image = membership.image
-        details.imageArtist = membership.imageArtist
-        details.memberStatus = membership.memberStatus
-        // Update the restaurant document with the new image details
-        const imageUpdates = {
-          [`accessLevels.${level}.image`]: details.image,
-          [`accessLevels.${level}.imageArtist`]: details.imageArtist,
-          [`accessLevels.${level}.memberStatus`]: details.memberStatus,
+        tempMissingFieldsObject = {
+          image: membership.image,
+          imageArtist: membership.imageArtist,
+          memberStatus: membership.memberStatus,
         }
-        await db.collection('restaurants').updateOne({ restaurantId }, { $set: imageUpdates })
       } else {
         console.log(`No matching membership found for restaurantId: ${restaurantId}, level: ${level}`)
         continue // Skip this level if no image is found
@@ -554,13 +582,26 @@ async function updateTierLevelColors(restaurantId, accessLevels) {
     }
 
     try {
-      const palette = await Vibrant.from(details.image).getPalette()
+      console.log(`Processing image ${details.image} for restaurantId: ${restaurantId}, level: ${level}`)
+      const palette = await Vibrant.from(details.image ?? tempMissingFieldsObject.image).getPalette()
       const vibrantColor = palette.Vibrant?.getRgb()
       if (vibrantColor) {
         const hexColor = `#${rgbHex(vibrantColor[0], vibrantColor[1], vibrantColor[2])}`
         const colorUpdates = {
           [`accessLevels.${level}.accent`]: hexColor,
           [`accessLevels.${level}.whiteText`]: shouldBeWhiteText(hexColor),
+        }
+        const { image, imageArtist, memberStatus } = tempMissingFieldsObject
+        if (
+          tempMissingFieldsObject.image &&
+          tempMissingFieldsObject.imageArtist &&
+          tempMissingFieldsObject.memberStatus
+        ) {
+          Object.assign(colorUpdates, {
+            [`accessLevels.${level}.image`]: image,
+            [`accessLevels.${level}.imageArtist`]: imageArtist,
+            [`accessLevels.${level}.memberStatus`]: memberStatus,
+          })
         }
         await db.collection('restaurants').updateOne({ restaurantId }, { $set: colorUpdates })
       }
@@ -571,66 +612,6 @@ async function updateTierLevelColors(restaurantId, accessLevels) {
   }
 }
 
-// async function enhanceRestaurants() {
-//   const db = await database()
-
-//   const uniqueRestaurants = await db.collection('memberships').distinct('restaurantId')
-
-//   for (const restaurantId of uniqueRestaurants) {
-//     const restaurant = await db.collection('restaurants').findOne({ restaurantId })
-//     console.log(`Adding tier level counts to restaurant ${restaurantId}`)
-//     if (!restaurant || !restaurant.accessLevels) continue
-
-//     const updates = {} // Object to hold all update operations
-
-//     let errorOccurred = false // Flag to track errors
-
-//     // Process each accessLevel for color and text
-//     for (const [level, details] of Object.entries(restaurant.accessLevels)) {
-//       if (details.image) {
-//         try {
-//           const palette = await Vibrant.from(details.image).getPalette()
-//           const vibrantColor = palette.Vibrant?.getRgb()
-//           if (vibrantColor) {
-//             const hexColor = `#${rgbHex(vibrantColor[0], vibrantColor[1], vibrantColor[2])}`
-//             const whiteText = shouldBeWhiteText(hexColor)
-//             console.log(`Setting accent color for level ${level} in restaurant ${restaurantId} to ${hexColor}`)
-//             // Prepare update operations for accent and whiteText
-//             updates[`accessLevels.${level}.whiteText`] = whiteText
-//             updates[`accessLevels.${level}.accent`] = hexColor
-//           }
-//         } catch (error) {
-//           console.error(`Failed to process image for level ${level} in restaurant ${restaurantId}:`, error)
-//           errorOccurred = true // Mark that an error occurred
-//           await insertData(DB_NAME, 'colorProcessingErrors', { error, restaurantId, level, image: details.image })
-//           break
-//         }
-//       }
-//     }
-
-//     // Skip updating the database for this restaurant if an error occurred
-//     if (errorOccurred) continue
-
-//     // Aggregate counts per accessLevel
-//     const countsPerAccessLevel = await db
-//       .collection('memberships')
-//       .aggregate([{ $match: { restaurantId } }, { $group: { _id: '$accessLevel', count: { $sum: 1 } } }])
-//       .toArray()
-
-//     // Prepare updates for counts and total members
-//     let totalMembers = 0
-//     countsPerAccessLevel.forEach(({ _id, count }) => {
-//       updates[`accessLevels.${_id}.count`] = count
-//       totalMembers += count
-//     })
-
-//     updates['members'] = totalMembers // Set total members
-
-//     // Apply all updates in one operation
-//     await db.collection('restaurants').updateOne({ restaurantId }, { $set: updates })
-//   }
-// }
-
 async function updateTierLevelCounts(restaurantId) {
   const db = await database()
 
@@ -639,14 +620,14 @@ async function updateTierLevelCounts(restaurantId) {
     .aggregate([{ $match: { restaurantId } }, { $group: { _id: '$accessLevel', count: { $sum: 1 } } }])
     .toArray()
 
-  let updates = {}
-  let totalMembers = 0
-  countsPerAccessLevel.forEach(({ _id, count }) => {
-    updates[`accessLevels.${_id}.count`] = count
-    totalMembers += count
+  countsPerAccessLevel.forEach(async ({ _id, count }) => {
+    await db
+      .collection('restaurants')
+      .updateOne(
+        { restaurantId, [`accessLevels.${_id}`]: { $exists: true } },
+        { $set: { [`accessLevels.${_id}.count`]: count } }
+      )
   })
-
-  await db.collection('restaurants').updateOne({ restaurantId }, { $set: updates, $set: { members: totalMembers } })
 }
 
 function shouldBeWhiteText(backgroundColor, contrastThreshold = 2) {
