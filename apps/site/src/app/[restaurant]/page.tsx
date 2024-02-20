@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { accessLevels, restaurantName } = await getMetadataData(restaurantId)
   const accessLevelImages = Object.values(accessLevels).map(details => details.image)
   const strippedAccessLevelImages = accessLevelImages.map(imageUrl =>
-    imageUrl.replace(/^https:\/\/images\.blackbird\.xyz/, '')
+    imageUrl?.replace(/^https:\/\/images\.blackbird\.xyz/, '')
   )
   const concatenatedImages = strippedAccessLevelImages.join(',')
 

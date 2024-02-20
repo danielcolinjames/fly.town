@@ -514,6 +514,8 @@ async function enhanceRestaurants() {
 
     const updates = {} // Object to hold all update operations
 
+    let errorOccurred = false // Flag to track errors
+
     // Process each accessLevel for color and text
     for (const [level, details] of Object.entries(restaurant.accessLevels)) {
       if (details.image) {
@@ -530,10 +532,15 @@ async function enhanceRestaurants() {
           }
         } catch (error) {
           console.error(`Failed to process image for level ${level} in restaurant ${restaurantId}:`, error)
-          // Handle errors as needed
+          errorOccurred = true // Mark that an error occurred
+          await insertData(DB_NAME, 'colorProcessingErrors', { error, restaurantId, level, image: details.image })
+          break
         }
       }
     }
+
+    // Skip updating the database for this restaurant if an error occurred
+    if (errorOccurred) continue
 
     // Aggregate counts per accessLevel
     const countsPerAccessLevel = await db
