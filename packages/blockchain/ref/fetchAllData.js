@@ -1,25 +1,17 @@
 require('dotenv').config()
 const ethers = require('ethers')
 const axios = require('axios')
-const { connect, insertData, database, disconnect } = require('../../packages/db/connect')
-const { publishContract, nftContract, FIRST_EMIT_BLOCK, publishCa, nftCa } = require('../../packages/blockchain/utils')
-const { delay, generateRestaurantId } = require('../../packages/utils')
-const { DB_NAME } = require('../../packages/db/globals')
+const { connect, insertData, database, disconnect } = require('../../db/connect')
+const { publishContract, nftContract, FIRST_EMIT_BLOCK, publishCa, nftCa } = require('../utils')
+const { delay, generateRestaurantId } = require('../../utils')
+const { DB_NAME } = require('../../db/globals')
 const Vibrant = require('node-vibrant')
+const rgbHex = import('rgb-hex').then(module => module.default)
 const wcagContrast = require('wcag-contrast')
-
-let rgbHex
-
-async function initializeImports() {
-  const rgbHexModule = await import('rgb-hex')
-  rgbHex = rgbHexModule.default
-}
 
 const provider = new ethers.providers.JsonRpcProvider('https://mainnet.base.org')
 
 async function main() {
-  await initializeImports()
-
   await connect()
   console.log('Connected to MongoDB')
   console.log({ DB_NAME })
@@ -76,63 +68,47 @@ main().catch(console.error)
 // 1) get NFT membership highest ID
 async function findHighestTokenID() {
   const currentBlockNumber = await provider.getBlockNumber()
-  const chunkSize = 2000
-  const fromBlock = currentBlockNumber - 1000 // look at last 1000 blocks, should be enough
-  const toBlock = currentBlockNumber
+  const chunkSize = 1500 // Adjust this value if needed to fit within the node's constraints
+  const fromBlock = currentBlockNumber - 10000 // Adjust based on how far back you want to search
+  let highestId = ethers.BigNumber.from(0) // Initialize outside the loop
 
-  // const singleSignature = ethers.utils.id('TransferSingle(address,address,address,uint256,uint256)')
-  const batchSignature = ethers.utils.id('TransferBatch(address,address,address,uint256[],uint256[])')
-
-  for (let startBlock = fromBlock; startBlock <= toBlock; startBlock += chunkSize + 1) {
-    const endBlock = Math.min(startBlock + chunkSize, toBlock)
-    console.log(`Fetching logs from block ${startBlock} to ${toBlock} for address ${nftCa}`)
+  for (let startBlock = fromBlock; startBlock <= currentBlockNumber; startBlock += chunkSize + 1) {
+    const endBlock = Math.min(startBlock + chunkSize, currentBlockNumber)
+    console.log(`Fetching logs from block ${startBlock} to ${endBlock} for address ${nftCa}`)
 
     try {
       const batches = await provider.getLogs({
         fromBlock: ethers.utils.hexValue(startBlock),
-        toBlock: ethers.utils.hexValue(toBlock),
+        toBlock: ethers.utils.hexValue(endBlock),
         address: nftCa,
-        topics: [batchSignature],
+        topics: [ethers.utils.id('TransferBatch(address,address,address,uint256[],uint256[])')],
       })
-      // batches can be either a huge list of `ids`, of which we want the highest number, or a single `id`
 
       console.log(`Fetched ${batches.length} TransferBatch events.`)
 
-      let highestId = ethers.BigNumber.from(0) // Initialize outside the loop
-
       for (const event of batches) {
         const parsedLog = nftContract.interface.parseLog(event)
-        let ids = parsedLog.args.ids
+        const ids = Array.isArray(parsedLog.args.ids) ? parsedLog.args.ids : [parsedLog.args.ids]
 
-        // Ensure `ids` is an array, even for single transfers
-        ids = Array.isArray(ids) ? ids : [ids]
-
-        // Find the highest ID in the current event
         const currentHighestId = ids.reduce(
           (max, id) => (ethers.BigNumber.from(id).gt(max) ? ethers.BigNumber.from(id) : max),
-          ethers.BigNumber.from(0)
+          highestId
         )
 
-        // Update the overall highest ID if the current event's highest ID is greater
-        if (currentHighestId.gt(highestId)) {
-          highestId = currentHighestId
-        }
+        highestId = currentHighestId.gt(highestId) ? currentHighestId : highestId
       }
-      console.log(`Highest ID found in the last ${toBlock - fromBlock} blocks:`, highestId.toNumber())
-      return highestId
     } catch (error) {
       console.error(`Error fetching logs for blocks ${startBlock} to ${endBlock}:`, error)
     }
   }
 
-  const highestIdNumber = highestId.toNumber()
-  console.log('Found highest ID:', highestIdNumber)
-  return highestIdNumber
+  console.log('Highest ID found:', highestId.toString())
+  return highestId
 }
 
 // 2)
 // fetch all membership NFT metadata
-async function fetchNFTMetadataInBatches(fromTokenId, toTokenId, batchSize = 100) {
+async function fetchNFTMetadataInBatches(fromTokenId, toTokenId, batchSize = 1000) {
   const db = await database()
   const highestMembershipDoc = await db.collection('memberships').findOne(
     {},
@@ -160,7 +136,9 @@ async function fetchNFTMetadataInBatches(fromTokenId, toTokenId, batchSize = 100
       }
 
       try {
+        console.log(`Fetching metadata for NFT ID ${id}...`)
         const fetchedMetadata = await fetchNFTMetadata(id)
+        console.log(`Success! Fetched ${id}`)
         return { status: 'fulfilled', value: fetchedMetadata }
       } catch (error) {
         console.error(`Error fetching NFT metadata for ID ${id}:`, error)
@@ -502,54 +480,48 @@ async function enhanceRestaurants() {
   const uniqueRestaurants = await db.collection('memberships').distinct('restaurantId')
 
   for (const restaurantId of uniqueRestaurants) {
+    // Fetch the restaurant document to get access to tier images
     const restaurant = await db.collection('restaurants').findOne({ restaurantId })
 
-    if (!restaurant || !restaurant.accessLevels) continue
+    // Continue only if restaurant is found
+    if (!restaurant) continue
 
-    const updates = {} // Object to hold all update operations
-
-    // Process each accessLevel for color and text
+    // Extract and update color for each tier
     for (const [level, details] of Object.entries(restaurant.accessLevels)) {
       if (details.image) {
         try {
           const palette = await Vibrant.from(details.image).getPalette()
           const vibrantColor = palette.Vibrant?.getRgb()
           if (vibrantColor) {
-            const hexColor = `#${rgbHex(vibrantColor[0], vibrantColor[1], vibrantColor[2])}`
-            const whiteText = shouldBeWhiteText(hexColor)
-            // Prepare update operations for accent and whiteText
-            updates[`accessLevels.${level}.whiteText`] = whiteText
-            updates[`accessLevels.${level}.accent`] = hexColor
+            const hexColor = `#${rgbHex(...vibrantColor)}`
+            details.accent = hexColor // Add the hex color as the accent property
           }
         } catch (error) {
           console.error(`Failed to process image for level ${level} in restaurant ${restaurantId}:`, error)
-          // Handle errors as needed
+          await insertData(DB_NAME, 'restaurantImageErrors', { error, restaurantId, level })
         }
       }
     }
 
-    // Aggregate counts per accessLevel
+    // Aggregate to get counts per accessLevel
     const countsPerAccessLevel = await db
       .collection('memberships')
-      .aggregate([{ $match: { restaurantId } }, { $group: { _id: '$accessLevel', count: { $sum: 1 } } }])
+      .aggregate([{ $match: { restaurantId: restaurantId } }, { $group: { _id: '$accessLevel', count: { $sum: 1 } } }])
       .toArray()
 
-    // Prepare updates for counts and total members
     let totalMembers = 0
-    countsPerAccessLevel.forEach(({ _id, count }) => {
-      updates[`accessLevels.${_id}.count`] = count
-      totalMembers += count
+    let updateCounts = {}
+    countsPerAccessLevel.forEach(level => {
+      updateCounts[`accessLevels.${level._id}.count`] = level.count // Ensure counts are correctly assigned
+      totalMembers += level.count
     })
 
-    updates['members'] = totalMembers // Set total members
-
-    // Apply all updates in one operation
-    await db.collection('restaurants').updateOne({ restaurantId }, { $set: updates })
+    // Correct use of $set to update both counts and members
+    await db.collection('restaurants').updateOne(
+      { restaurantId: restaurantId },
+      { $set: { ...updateCounts, members: totalMembers } } // Combined into one $set operation
+    )
   }
-}
-
-function shouldBeWhiteText(backgroundColor, contrastThreshold = 2) {
-  return wcagContrast.hex('#FFFFFF', backgroundColor) >= contrastThreshold
 }
 
 // 10)

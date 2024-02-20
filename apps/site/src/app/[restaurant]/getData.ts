@@ -5,20 +5,23 @@ export interface AccessLevelDetails {
   memberStatus: string
   imageArtist: string
   image: string
+  accent: string
+  whiteText: boolean
+  count: number
 }
 
 export async function getData(restaurantId: string): Promise<{
   restaurantName: string
   checkinCount: number
   recentCheckins: any[]
-  accessLevels: AccessLevelDetails | {}
+  accessLevels: AccessLevelDetails
   firstCheckinDate: Date | null
   mostRecentCheckinDate: Date | null
   checkinsLast24h: number
   checkinsLastMonth: number
   numberOfMemberships: number
   averageCheckinsPerMembership: number
-}> {
+} | null> {
   try {
     const client = await clientPromise
     const db = client.db(SITE_DB_NAME)
@@ -31,13 +34,13 @@ export async function getData(restaurantId: string): Promise<{
     const aggregationPipeline = [
       {
         $addFields: {
-          // Convert created_at from string to date
-          createdAtDate: { $dateFromString: { dateString: '$created_at' } },
+          // Convert createdAt from string to date
+          createdAtDate: { $dateFromString: { dateString: '$createdAt' } },
         },
       },
       {
         $match: {
-          restaurant_id: restaurantId,
+          restaurantId: restaurantId,
         },
       },
       {
@@ -45,11 +48,11 @@ export async function getData(restaurantId: string): Promise<{
       },
     ]
 
-    const checkins = await db.collection('checkins').aggregate(aggregationPipeline).toArray()
+    const checkins = await db.collection('checkIns').aggregate(aggregationPipeline).toArray()
 
     // Assuming we have the restaurant's data including access levels
-    const restaurantDoc = await db.collection('restaurants').findOne({ restaurant_id: restaurantId })
-    const restaurantName = restaurantDoc?.full_name || ''
+    const restaurantDoc = await db.collection('restaurants').findOne({ restaurantId: restaurantId })
+    const restaurantName = restaurantDoc?.restaurantName || ''
     const accessLevels = restaurantDoc?.accessLevels || {}
 
     const checkinCount = checkins.length
@@ -58,29 +61,10 @@ export async function getData(restaurantId: string): Promise<{
     const mostRecentCheckinDate = checkinCount > 0 ? checkins[0].createdAtDate : null
     const checkinsLast24h = checkins.filter(c => c.createdAtDate >= oneDayAgo).length
     const checkinsLastMonth = checkins.filter(c => c.createdAtDate >= oneMonthAgo).length
-
-    // Extract and count memberships associated with the restaurantName
     const numberOfMembershipsAggregation = [
       {
-        $project: {
-          attributes: 1, // Only project the attributes field
-          restaurantName: {
-            $arrayElemAt: [
-              {
-                $filter: {
-                  input: '$attributes',
-                  as: 'attr',
-                  cond: { $eq: ['$$attr.trait_type', 'restaurantName'] },
-                },
-              },
-              0,
-            ],
-          },
-        },
-      },
-      {
         $match: {
-          'restaurantName.value': restaurantName, // Use the restaurant name obtained from the restaurant document
+          restaurantId: restaurantId, // Use the restaurantId directly for matching
         },
       },
       {
@@ -110,17 +94,6 @@ export async function getData(restaurantId: string): Promise<{
     }
   } catch (e) {
     console.error(e)
-    return {
-      restaurantName: '',
-      checkinCount: 0,
-      recentCheckins: [],
-      accessLevels: {},
-      firstCheckinDate: null,
-      mostRecentCheckinDate: null,
-      checkinsLast24h: 0,
-      checkinsLastMonth: 0,
-      numberOfMemberships: 0,
-      averageCheckinsPerMembership: 0,
-    }
+    return null
   }
 }

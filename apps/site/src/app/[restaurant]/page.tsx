@@ -3,14 +3,12 @@ import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import type { Metadata } from 'next'
 import { AccessLevelDetails, getData } from './getData'
-import Image from 'next/image'
-import { CalendarDays, Clock, Clock1, Flag, GroupIcon, LucideIcon, Nfc, PersonStanding, Stamp } from 'lucide-react'
+import { CalendarDays, Clock, Flag, Nfc, PersonStanding, Stamp } from 'lucide-react'
 import { formatDate } from '../lib/utils'
-import { ReactNode } from 'react'
-import Link from 'next/link'
 import { MembershipsSection } from './components/MembershipsSection'
 import { RestaurantTitleSection } from './components/RestaurantTitleSection'
 import { SITE_DB_NAME } from '@/lib/utils'
+import { StatCard } from '../../components/StatCard'
 
 async function getMetadataData(
   restaurantId: string
@@ -19,9 +17,9 @@ async function getMetadataData(
     const client = await clientPromise
     const db = client.db(SITE_DB_NAME)
 
-    const restaurantDoc = await db.collection('restaurants').findOne({ restaurant_id: restaurantId })
+    const restaurantDoc = await db.collection('restaurants').findOne({ restaurantId: restaurantId })
     const accessLevels = restaurantDoc?.accessLevels || {}
-    const restaurantName = restaurantDoc?.full_name || 'Unknown Restaurant'
+    const restaurantName = restaurantDoc?.restaurantName
 
     return { accessLevels, restaurantName }
   } catch (e) {
@@ -51,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${restaurantName} - fly.town`,
       description: `${restaurantName}'s profile on fly.town`,
-      url: 'https://fly.town',
+      url: `https://fly.town/${restaurantId}`,
       siteName: 'fly.town',
       images: ogUrl,
       locale: 'en_US',
@@ -63,6 +61,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RestaurantPage({ params }: { params: { restaurant: string } }) {
   const { restaurant: restaurantId } = params
 
+  const restaurantData = await getData(restaurantId)
+  if (!restaurantData) {
+    return (
+      <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-14 sm:pb-24 bg-[#0b0b0b] relative">
+        <Navbar />
+        <div>Restaurant not found</div>
+      </main>
+    )
+  }
   const {
     restaurantName,
     checkinCount,
@@ -73,7 +80,8 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
     numberOfMemberships,
     averageCheckinsPerMembership,
     accessLevels,
-  } = await getData(restaurantId)
+  } = restaurantData
+
 
   const iconSize = 24
 
@@ -119,22 +127,5 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
       </div>
       <Footer />
     </main>
-  )
-}
-
-const StatCard = ({ title, statText, children }: { title: string; statText: string; children: ReactNode }) => {
-  return (
-    <div
-      className="flex flex-row gap-4 items-center justify-start px-4 py-4 duration-200 transition-all rounded-full
-      bg-[#0a0a0a] border-[#202020] border"
-    >
-      <div className="p-4 bg-[#181818] rounded-full">
-        <div className="text-gray-400">{children}</div>
-      </div>
-      <div className="flex flex-col items-start justify-center">
-        <p className="text-gray-400 text-base font-light">{title}</p>
-        <p className="text-white text-base font-semibold">{statText}</p>
-      </div>
-    </div>
   )
 }

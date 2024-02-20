@@ -1,8 +1,8 @@
 require('dotenv').config()
 const axios = require('axios')
-const { delay, slugify } = require('../utils')
-const { client, disconnect } = require('../db/connect')
-const { DB_NAME } = require('../db/globals')
+const { delay, slugify } = require('../../utils')
+const { client, disconnect } = require('../../db/connect')
+const { DB_NAME } = require('../../db/globals')
 
 const db = client.db(DB_NAME)
 
@@ -34,7 +34,7 @@ async function fetchNFTData(id) {
 
 async function processNFTData(nftData) {
   const restaurantName = nftData.attributes.find(attr => attr.trait_type === 'restaurantName').value
-  const restaurant_id = slugify(restaurantName)
+  const restaurant_id = generateRestaurantId(restaurantName)
   const image = nftData.image
   const imageArtist = nftData.attributes.find(attr => attr.trait_type === 'artist').value
   const location = nftData.attributes.find(attr => attr.trait_type === 'restaurantLocations').value

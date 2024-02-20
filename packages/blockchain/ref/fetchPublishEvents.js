@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const ethers = require('ethers')
-const { delay } = require('../utils')
+const { delay } = require('../../utils')
 
 const csvFilePath = path.join(__dirname, 'ipfs_hashes.csv')
 

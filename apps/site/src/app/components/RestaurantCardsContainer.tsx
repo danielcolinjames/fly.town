@@ -1,10 +1,10 @@
 import React from 'react'
-import { RestaurantCard } from './RestaurantCard'
+import { AccessLevel, RestaurantCard } from './RestaurantCard'
 
 export type Restaurant = {
-  restaurant_id: string
-  full_name: string
-  accessLevels: Record<string, { image: string }>
+  restaurantId: string
+  restaurantName: string
+  accessLevels: Record<string, AccessLevel>
   totalCheckins: number
 }
 

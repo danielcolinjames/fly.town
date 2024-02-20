@@ -22,7 +22,7 @@ async function initializeRestaurantsCollection() {
 
     // Slugify and insert into the restaurants collection
     for (const name of uniqueNames) {
-      const restaurant_id = slugify(name)
+      const restaurant_id = generateRestaurantId(name)
       await restaurants.updateOne(
         { restaurant_id: restaurant_id },
         { $setOnInsert: { full_name: name, restaurant_id: restaurant_id } },
@@ -65,7 +65,7 @@ async function createNameToSlugMap() {
     const restaurants = database.collection('restaurants')
     const cursor = restaurants.find({})
     await cursor.forEach(doc => {
-      map.set(doc.full_name, slugify(doc.full_name))
+      map.set(doc.full_name, generateRestaurantId(doc.full_name))
     })
   } catch (e) {
     console.error(e)

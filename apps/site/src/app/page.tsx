@@ -2,13 +2,11 @@ import clientPromise from '../lib/mongodb'
 import { Redis } from '@upstash/redis'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
-import Link from 'next/link'
-import { Crown, Plane, PlaneIcon, PlaneLandingIcon, PlaneTakeoff } from 'lucide-react'
-import classNames from 'classnames'
-import { RestaurantCard } from './components/RestaurantCard'
-import { Restaurant, RestaurantCardsContainer } from './components/RestaurantCardsContainer'
+import { RestaurantCardsContainer } from './components/RestaurantCardsContainer'
 import { getTopRestaurantsLast24Hours } from './data/restaurants'
 import { SITE_DB_NAME } from '@/lib/utils'
+import { Nfc, PersonStanding } from 'lucide-react'
+import { StatCard } from '@/components/StatCard'
 
 const redis = new Redis({
   url: 'https://light-bass-33631.upstash.io',
@@ -40,11 +38,11 @@ async function getCheckinCountsByRestaurant() {
   const db = client.db(SITE_DB_NAME)
 
   const checkinCounts = await db
-    .collection('checkins')
+    .collection('checkIns')
     .aggregate([
       {
         $group: {
-          _id: '$restaurant_id', // Group by restaurant_id
+          _id: '$restaurantId', // Group by restaurantId
           totalCheckins: { $count: {} }, // Count the checkins per restaurant
         },
       },
@@ -55,29 +53,26 @@ async function getCheckinCountsByRestaurant() {
   return checkinCounts
 }
 
-async function getRestaurantsSortedByCheckins() {
+async function getMostRecentCheckin() {
   const client = await clientPromise
-  const { DB_NAME } = require('../db/globals')
-  const db = client.db(DB_NAME)
+  const db = client.db(SITE_DB_NAME)
 
-  const checkinCounts = await getCheckinCountsByRestaurant()
+  const mostRecentCheckin = await db.collection('checkIns').find().sort({ createdAt: -1 }).limit(1).toArray()
 
-  // Map of restaurant_id to totalCheckins for quick lookup
-  const checkinMap = new Map(checkinCounts.map(({ _id, totalCheckins }) => [_id, totalCheckins]))
+  if (mostRecentCheckin.length > 0) {
+    const { checkInId, createdAt } = mostRecentCheckin[0]
+    return {
+      checkinId: checkInId,
+      date: new Date(createdAt).toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+    }
+  }
 
-  // Fetch all restaurants
-  let restaurants = await db.collection('restaurants').find().toArray()
-
-  // Add totalCheckins to each restaurant from checkinMap
-  restaurants = restaurants.map(restaurant => ({
-    ...restaurant,
-    totalCheckins: checkinMap.get(restaurant.restaurant_id) || 0, // Default to 0 if no checkins found
-  }))
-
-  // Sort restaurants by totalCheckins
-  restaurants.sort((a, b) => b.totalCheckins - a.totalCheckins)
-
-  return restaurants
+  return null
 }
 
 async function getData() {
@@ -132,13 +127,35 @@ async function getData() {
   }
 }
 
+async function getTotalMembershipsCount() {
+  const client = await clientPromise
+  const db = client.db(SITE_DB_NAME)
+
+  const totalMemberships = await db.collection('memberships').countDocuments()
+
+  return totalMemberships
+}
+
 export default async function Home() {
   const data = await getData()
   const count = data?.count ?? undefined
   const timestamp = data?.timestamp ?? undefined
 
-  // const restaurants = await getRestaurantsSortedByCheckins()
   const topRestaurants24h = await getTopRestaurantsLast24Hours()
+  const mostRecentCheckin = await getMostRecentCheckin()
+
+  const totalCheckins = mostRecentCheckin?.checkinId ? mostRecentCheckin.checkinId : 0
+  const totalUpdatedAt = mostRecentCheckin?.date
+    ? new Date(mostRecentCheckin.date)
+      .toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      })
+      .replace(/^0+/, '')
+    : undefined
+
+  const totalMembershipsCount = await getTotalMembershipsCount()
 
   // Convert the latest timestamp from Redis data for display
   let latestTime
@@ -158,42 +175,66 @@ export default async function Home() {
     day: 'numeric',
   })
 
+  const iconSize = 24
+
   return (
     <main className="flex min-h-screen w-full flex-col items-center overflow-hidden pb-10 sm:pb-40 bg-[#0b0b0b] relative">
       <Navbar />
       <div className="flex w-full flex-col">
-        {count ? (
-          <div className="flex flex-col justify-center items-center mt-10">
-            <div className="relative h-auto flex flex-col justify-center gap-0 bg-[#070707] border-[#202020] border-y w-full text-white py-8 sm:py-10">
-              <p className="text-center text-lg text-gray-600 sm:text-2xl">{today}</p>
-              <div className="flex flex-col items-center justify-center gap-1">
-                <h1 className="text-center text-white text-6xl font-medium tracking-tighter sm:text-8xl">
-                  {count.toLocaleString(undefined, {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  })}
-                </h1>
-                <div className="flex flex-col justify-center gap-0">
-                  <p className="text-center text-lg text-white sm:text-xl flex flex-row items-center font-light justify-center">
-                    $FLY per check in today
-                  </p>
-                  <p className="text-center text-sm text-gray-600 sm:text-base">Last updated at {latestTime} ET</p>
-                </div>
+        <div className="flex flex-col justify-center items-center mt-10">
+          <div className="relative h-auto bg-[#070707] border-[#202020] border-y w-full text-white py-8 sm:py-10">
+            <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
+              {count ? (
+                <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} />
+              ) : (
+                <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
+                  No FLYcast submitted yet for {today}
+                </h2>
+              )}
+              <div className="flex flex-row gap-4 w-full px-8">
+                <StatCard title="Members" statText={totalMembershipsCount.toLocaleString()}>
+                  <PersonStanding size={iconSize} />
+                </StatCard>
+                <StatCard title="Check ins" statText={(totalCheckins + 5043).toLocaleString()}>
+                  <Nfc size={iconSize} />
+                </StatCard>
               </div>
             </div>
           </div>
-        ) : (
-          <div className="flex flex-col justify-center items-center">
-            <div className="relative flex mx-auto flex-col justify-center mt-10 sm:mt-20 bg-[#070707] border-[#202020] border-y w-full px-8 py-8 sm:py-10">
-              <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
-                No FLYcast submitted yet for {today}
-              </h2>
-            </div>
-          </div>
-        )}
+        </div>
         <RestaurantCardsContainer restaurants={topRestaurants24h} title="Top 10" subtitle="Last 24h" />
       </div>
       <Footer />
     </main>
+  )
+}
+
+const HeroStatCard = ({
+  count,
+  latestTime,
+  title,
+  today,
+}: {
+  count: number
+  latestTime?: string
+  title: string
+  today: string
+}) => {
+  return (
+    <div className="flex flex-col items-center justify-center gap-1">
+      <p className="text-center text-lg text-gray-600 sm:text-2xl">{today}</p>
+      <h1 className="text-center text-white text-6xl font-medium tracking-tighter sm:text-8xl">
+        {count.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        })}
+      </h1>
+      <div className="flex flex-col justify-center gap-0">
+        <p className="text-center text-lg text-white sm:text-xl flex flex-row items-center font-light justify-center">
+          {title}
+        </p>
+        <p className="text-center text-sm text-gray-600 sm:text-base">Last updated at {latestTime} ET</p>
+      </div>
+    </div>
   )
 }

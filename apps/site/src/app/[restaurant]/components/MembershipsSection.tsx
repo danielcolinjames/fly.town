@@ -2,7 +2,13 @@
 import { AccessLevelDetails } from '../getData'
 // import { motion } from 'framer-motion'
 
-export const MembershipsSection = ({ accessLevels, restaurantId }: { accessLevels: AccessLevelDetails | {}, restaurantId: string }) => {
+export const MembershipsSection = ({
+  accessLevels,
+  restaurantId,
+}: {
+  accessLevels: AccessLevelDetails
+  restaurantId: string
+}) => {
   const totalWidth = 836
   const totalHeight = 630
   const numberOfImages = Object.keys(accessLevels).length
@@ -33,6 +39,8 @@ export const MembershipsSection = ({ accessLevels, restaurantId }: { accessLevel
     marginLeft = -requiredOverlapPerImage // Apply as negative margin to each image except the first
   }
 
+  const { image, memberStatus, accent, whiteText } = accessLevels
+
   return (
     // <motion.div
     <div
@@ -44,7 +52,7 @@ export const MembershipsSection = ({ accessLevels, restaurantId }: { accessLevel
       </p>
       <div className="flex flex-col md:flex-row justify-center items-start px-8 gap-8 sm:gap-4 w-full">
         {Object.entries(accessLevels).map(([level, details], index, { length }) => (
-          <div key={index} className="rounded-lg shadow gap-4">
+          <div key={index} className="rounded-lg shadow-xl gap-4" style={{ borderColor: details.accent }}>
             {/* <motion.img */}
             <img
               src={details.image}
@@ -54,14 +62,15 @@ export const MembershipsSection = ({ accessLevels, restaurantId }: { accessLevel
               width={imageWidth}
               height={imageHeight}
             />
-            <p className="text-gray-700 justify-center text-left sm:text-center hover:text-brandYellow mt-1 transition-all duration-200">
-              Artist: {details.imageArtist}
-            </p>
-            <div className="pt-0 sm:pt-2 gap-2">
+            <div className="flex flex-col items-center justify-center pt-0 sm:pt-2 gap-2">
+              <p className="text-gray-700 justify-center text-left sm:text-center hover:text-brandYellow mt-1 transition-all duration-200">
+                Artist: {details.imageArtist}
+              </p>
               <div className="flex gap-2 justify-start sm:justify-center">
                 <p className="text-gray-400 text-lg sm:text-xl font-light">{level}</p>
                 <p className="text-white text-lg sm:text-xl font-semibold">{details.memberStatus}</p>
               </div>
+              <p style={{ color: details.accent }} className="text-lg sm:text-xl font-light">{details.count.toLocaleString()} members</p>
             </div>
           </div>
         ))}

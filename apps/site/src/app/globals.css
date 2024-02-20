@@ -50,9 +50,11 @@ html.dark {
 
 ::-moz-selection {
   /* Code for Firefox */
+  color: white;
   background: #f9b51e;
 }
 
 ::selection {
+  color: white;
   background: #f9b51e;
 }

@@ -2,7 +2,7 @@ require('dotenv').config()
 const fs = require('fs')
 const path = require('path')
 const axios = require('axios')
-const { connect, insertData } = require('../db/connect')
+const { insertData, database } = require('../../db/connect')
 const csv = require('csv-parser')
 
 async function fetchIPFSData(hash, blockNumber, transactionHash) {
@@ -34,8 +34,8 @@ function logError(hash) {
 }
 
 async function fetchIPFSDataInBatches(filePath, batchSize = 50) {
-  const client = await connect()
-  if (!client) {
+  const db = await database()
+  if (!db) {
     console.error('Failed to connect to MongoDB.')
     return
   }
@@ -55,12 +55,11 @@ async function fetchIPFSDataInBatches(filePath, batchSize = 50) {
         const batchData = (await Promise.all(batchDataPromises)).flat().filter(data => data !== null)
 
         console.log(`Batch ${i / batchSize + 1}: Inserting ${batchData.length} records`)
-        await insertData('checkins', batchData)
+        await insertData(db, 'checkins', batchData)
 
         await new Promise(resolve => setTimeout(resolve, 500)) // Delay to avoid rate limiting
       }
 
-      await client.close()
       console.log('Finished fetching and inserting IPFS data.')
     })
 }
