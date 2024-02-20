@@ -12,11 +12,11 @@ async function getCheckinCountsByRestaurant() {
   const db = client.db(SITE_DB_NAME)
 
   const checkinCounts = await db
-    .collection('checkins')
+    .collection('checkIns')
     .aggregate([
       {
         $group: {
-          _id: '$restaurant_id', // Group by restaurant_id
+          _id: '$restaurantId', // Group by restaurant_id
           totalCheckins: { $count: {} }, // Count the checkins per restaurant
         },
       },
@@ -41,14 +41,14 @@ async function getRestaurantsSortedByCheckins() {
 
   // Add totalCheckins to each restaurant from checkinMap
   const restaurants = allRestaurants.map(restaurant => ({
-    restaurant_id: restaurant.restaurant_id,
-    full_name: restaurant.full_name, // Assuming 'full_name' is a field in your documents
-    accessLevels: restaurant.accessLevels || [], // Assuming 'accessLevels' is an optional field in your documents
-    totalCheckins: checkinMap.get(restaurant.restaurant_id) || 0,
+    restaurantId: restaurant.restaurantId,
+    restaurantName: restaurant.restaurantName,
+    accessLevels: restaurant.accessLevels || [],
+    totalCheckins: checkinMap.get(restaurant.restaurantId) || 0,
     // Explicitly set or default any other required properties here
   })) as Restaurant[]
 
-  const filteredRestaurants = restaurants.filter(restaurant => !ignoredRestaurantIds.includes(restaurant.restaurant_id))
+  const filteredRestaurants = restaurants.filter(restaurant => !ignoredRestaurantIds.includes(restaurant.restaurantId))
 
   // Sort restaurants by totalCheckins
   filteredRestaurants.sort((a, b) => b.totalCheckins - a.totalCheckins)
