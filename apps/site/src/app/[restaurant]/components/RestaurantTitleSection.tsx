@@ -6,15 +6,17 @@ export const RestaurantTitleSection = ({
   restaurantName,
   restaurantId,
   subtitle,
+  location,
   highestValueKeyAccent,
 }: {
   restaurantName: string
   restaurantId: string
   subtitle: string
+  location: string
   highestValueKeyAccent: string
 }) => {
   return (
-    <div className="flex flex-col gap-2 pb-4 sm:pb-8 max-w-3xl mx-auto px-8">
+    <div className="flex flex-col gap-4 pb-4 sm:pb-8 max-w-3xl mx-auto px-8">
       <Link
         href="/"
         className="block text-sm sm:text-base duration-150 transition-all py-4 w-auto hover:opacity-50"
@@ -31,7 +33,8 @@ export const RestaurantTitleSection = ({
         {/* </motion.span> */}
       </span>
       {/* <div className='w-full h-1 rounded-full' style={{ backgroundColor: highestValueKeyAccent }} /> */}
-      <div className="flex flex-col justify-center gap-0 rounded-full">
+      <div className="flex flex-col justify-center gap-1 rounded-full pb-4 sm:pb-8">
+        <p className="text-left text-xl text-gray-400 sm:text-2xl">{location}</p>
         <p className="text-left text-xl text-gray-600 sm:text-2xl">
           {subtitle}
         </p>

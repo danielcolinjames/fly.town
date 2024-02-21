@@ -102,9 +102,9 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
             restaurantId={restaurantId}
             highestValueKeyAccent={highestValueKeyAccent}
             restaurantName={restaurantName}
+            location={location}
             subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
           />
-          <p className="text-center text-gray-400 text-sm sm:text-base pb-4 sm:pb-8">{location}</p>
           <MembershipsSection accessLevels={accessLevels} restaurantId={restaurantId} highestValueKeyAccent={highestValueKeyAccent} />
           <div className="text-gray-200 pt-8 sm:pt-10 max-w-3xl mx-auto px-2 sm:px-8">
             <div className="grid sm:grid-cols-2 gap-4">
