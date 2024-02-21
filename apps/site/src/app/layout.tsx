@@ -36,9 +36,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        <main className="min-h-screen bg-[#0b0b0b] relative pb-14 sm:pb-24">
+        <main className="min-h-screen bg-[#0b0b0b] relative">
           <Navbar />
-          {children}
+          <div className="w-full pt-[68px]">
+            {children}
+          </div>
           <Footer />
         </main>
         <SpeedInsights />

@@ -178,9 +178,9 @@ export default async function Home() {
   const iconSize = 24
 
   return (
-    <div className="flex w-full flex-col pb-14 sm:pb-24">
+    <div className="flex w-full flex-col pb-14 sm:pb-32">
       <div className="flex flex-col justify-center items-center">
-        <div className="relative h-auto bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
+        <div className="bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
           <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
             {count ? (
               <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} />
@@ -200,7 +200,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className='mt-8 sm:mt-14'>
+      <div className='mt-6'>
         <RestaurantCardsContainer restaurants={topRestaurants} title="Top 10" subtitle={`12AM UTC ${startOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} — 12AM UTC ${endOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}`} />
       </div>
     </div>

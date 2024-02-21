@@ -86,17 +86,26 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
 
   const iconSize = 24
 
+  const highestValueKeyAccent = Object.entries(accessLevels).reduce((acc, [key, value]) => {
+    const keyValue = parseInt(key, 10);
+    if (keyValue > acc.highestValue) {
+      return { highestValue: keyValue, accent: value.accent };
+    }
+    return acc;
+  }, { highestValue: 0, accent: '' }).accent;
+
   return (
-    <div className="flex w-full flex-col">
-      <div className="relative flex w-full flex-col justify-center gap-5 pt-14 sm:gap-10 sm:pt-32">
+    <div className="flex w-full flex-col pb-14 sm:pb-32" style={{ backgroundColor: `${highestValueKeyAccent}00` }}>
+      <div className="relative flex w-full flex-col justify-center gap-5 pt-8 sm:gap-10 sm:pt-14">
         <div className="w-full sm:max-w-8xl mx-auto">
           <RestaurantTitleSection
             restaurantId={restaurantId}
+            highestValueKeyAccent={highestValueKeyAccent}
             restaurantName={restaurantName}
             subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
           />
           <p className="text-center text-gray-400 text-sm sm:text-base pb-4 sm:pb-8">{location}</p>
-          <MembershipsSection accessLevels={accessLevels} restaurantId={restaurantId} />
+          <MembershipsSection accessLevels={accessLevels} restaurantId={restaurantId} highestValueKeyAccent={highestValueKeyAccent} />
           <div className="text-gray-200 pt-8 sm:pt-10 max-w-3xl mx-auto px-2 sm:px-8">
             <div className="grid sm:grid-cols-2 gap-4">
               <StatCard title="First check in" statText={firstCheckinDate ? formatDistanceToNow(new Date(firstCheckinDate), { addSuffix: true }) : 'N/A'}>

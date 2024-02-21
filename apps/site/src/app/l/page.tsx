@@ -59,6 +59,8 @@ export default async function LatestPage() {
   const recentFirstCheckIns = data.recentFirstCheckIns as Restaurant[]
 
   return (
-    <NewRestaurantCardsContainer restaurants={recentFirstCheckIns} title="Newest restaurants" subtitle="By recency of first check in" />
+    <div className='pb-14 sm:pb-32 pt-14'>
+      <NewRestaurantCardsContainer restaurants={recentFirstCheckIns} title="Newest restaurants" subtitle="By recency of first check in" />
+    </div>
   )
 }
