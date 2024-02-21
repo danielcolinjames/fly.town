@@ -179,8 +179,8 @@ export default async function Home() {
 
   return (
     <div className="flex w-full flex-col pb-14 sm:pb-24">
-      <div className="flex flex-col justify-center items-center mt-10">
-        <div className="relative h-auto bg-[#070707] border-[#202020] border-y w-full text-white py-8 sm:py-10">
+      <div className="flex flex-col justify-center items-center">
+        <div className="relative h-auto bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
           <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
             {count ? (
               <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} />
@@ -189,18 +189,20 @@ export default async function Home() {
                 No FLYcast submitted yet for {today}
               </h2>
             )}
-            <div className="flex flex-row gap-4 w-full px-8">
+            {/* <div className="flex flex-row gap-4 w-full px-8">
               <StatCard title="Members" statText={totalMembershipsCount.toLocaleString()}>
                 <PersonStanding size={iconSize} />
               </StatCard>
               <StatCard title="Check ins" statText={(totalCheckins + 5043).toLocaleString()}>
                 <Nfc size={iconSize} />
               </StatCard>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
-      <RestaurantCardsContainer restaurants={topRestaurants24h} title="Top 10" subtitle="Last 24h" />
+      <div className='mt-8 sm:mt-14'>
+        <RestaurantCardsContainer restaurants={topRestaurants24h} title="Top 10" subtitle="Last 24h" />
+      </div>
     </div>
   )
 }

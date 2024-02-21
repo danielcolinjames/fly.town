@@ -21,7 +21,7 @@ export const RestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> =
     <div className="flex flex-col justify-center gap-8 sm:gap-4 px-4 sm:px-0">
       {restaurants ? (
         <div className="flex flex-col justify-center gap-8 sm:gap-4">
-          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-sm sm:max-w-xl mx-auto w-full mt-10 sm:mt-20">
+          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-sm sm:max-w-xl mx-auto w-full">
             <p className="text-center text-white text-light text-2xl sm:text-4xl flex flex-col pb-4">
               {title}
               <span className="text-xs text-gray-600 sm:text-base">{subtitle}</span>
@@ -34,7 +34,7 @@ export const RestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> =
           </div>
         </div>
       ) : (
-        <div className="relative flex w-full flex-col justify-center pt-20 sm:pt-56">
+        <div className="relative flex w-full flex-col justify-center">
           <h2 className="text-center text-2xl italic tracking-tighter text-gray-500 sm:text-2xl">
             No restaurant stats available
           </h2>
@@ -59,7 +59,7 @@ export const NewRestaurantCardsContainer: React.FC<RestaurantCardsContainerProps
                 const timestamp = restaurant.firstCheckInDate
                 const firstCheckInDate = timestamp ? formatDistanceToNow(new Date(timestamp), { addSuffix: true }) : 'N/A'
                 return (
-                  <RestaurantCard key={index} restaurant={restaurant} index={index} subtitle={`First check in ${firstCheckInDate}`} />
+                  <RestaurantCard key={index} restaurant={restaurant} index={index} subtitle={`First check in ${firstCheckInDate}`} hideCrown />
                 )
               })}
             </div>

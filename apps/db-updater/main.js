@@ -548,7 +548,6 @@ async function enhanceRestaurants() {
   const uniqueRestaurants = await db.collection('memberships').distinct('restaurantId')
 
   for (const restaurantId of uniqueRestaurants) {
-    console.log(`Adding tier level counts to restaurant ${restaurantId}`)
     const restaurant = await db.collection('restaurants').findOne({ restaurantId })
     // const uniqueAccessLevels = await db
     //   .collection('memberships')
@@ -655,6 +654,7 @@ async function updateTierLevelCounts(restaurantId) {
     .toArray()
 
   countsPerAccessLevel.forEach(async ({ _id, count }) => {
+    console.log(`Updating restaurantId: ${restaurantId}, level: ${_id} with count: ${count}`)
     await db
       .collection('restaurants')
       .updateOne(
