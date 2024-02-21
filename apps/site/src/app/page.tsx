@@ -176,6 +176,24 @@ export default async function Home() {
   })
 
   const iconSize = 24
+  // Note: The incoming date is assumed to be in UTC. The displayed times for startOfRange and endOfRange will also be in UTC for consistency.
+  const formatEndRangeUTC = (date: Date) => {
+    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })} at ${date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, timeZone: 'UTC' })}`;
+  };
+
+  const formatStartRangeUTC = (date: Date) => {
+    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}`;
+  }
+
+  // Adjusted subtitle to include formatted start and end of range in UTC
+  const adjustedSubtitleUTC = `By check ins between ${formatStartRangeUTC(startOfRange)} — ${formatEndRangeUTC(endOfRange)} (UTC)`;
+
+  // const formatLocalDateTime = (date: Date) => {
+  //   return `${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} at ${date.toLocaleTimeString(undefined, { hour: 'numeric', hour12: true })}`;
+  // };
+
+  // // Adjusted subtitle to include formatted start and end of range
+  // const adjustedSubtitle = `By check ins between ${formatLocalDateTime(startOfRange)} — ${formatLocalDateTime(endOfRange)}`;
 
   return (
     <div className="flex w-full flex-col pb-14 sm:pb-32">
@@ -204,7 +222,7 @@ export default async function Home() {
         </div>
       </div>
       <div className='mt-6 sm:mt-0'>
-        <RestaurantCardsContainer restaurants={topRestaurants} title="Top 10" subtitle={`12AM UTC ${startOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} — 12AM UTC ${endOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}`} />
+        <RestaurantCardsContainer restaurants={topRestaurants} title="Top 10" subtitle={adjustedSubtitleUTC} />
       </div>
     </div>
   )

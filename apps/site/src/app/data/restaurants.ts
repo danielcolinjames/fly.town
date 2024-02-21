@@ -2,12 +2,16 @@ import { Restaurant } from '../components/RestaurantCardsContainer'
 import clientPromise from '../../lib/mongodb'
 import { SITE_DB_NAME } from '@/lib/utils'
 
+const excludedIds = ['flybar', 'the-daily']
+
 export async function getTopRestaurantsLast24Hours() {
   const client = await clientPromise
   const db = client.db(SITE_DB_NAME)
-  // Create a date object for 12 AM UTC of the current day
-  const startOfTodayUTC = new Date(new Date().setUTCHours(0, 0, 0, 0))
-  const endOfTodayUTC = new Date(new Date().setUTCHours(23, 59, 59, 999))
+  // Create a date object for 10 AM UTC of the current day
+  const startOfTodayUTC = new Date(new Date().setUTCHours(10, 0, 0, 0))
+  // Create a date object for 10 AM UTC of the next day
+  const endOfTodayUTC = new Date(new Date().setUTCHours(10, 0, 0, 0))
+  endOfTodayUTC.setDate(endOfTodayUTC.getDate() + 1)
 
   const topRestaurants = await db
     .collection('checkIns')
@@ -22,7 +26,9 @@ export async function getTopRestaurantsLast24Hours() {
       },
       {
         $match: {
-          createdAtDate: { $gte: startOfTodayUTC },
+          createdAtDate: { $gte: startOfTodayUTC, $lt: endOfTodayUTC },
+          // Exclude documents with restaurantId in excludedIds
+          restaurantId: { $nin: excludedIds },
         },
       },
       {
