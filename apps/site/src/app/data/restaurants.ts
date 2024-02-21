@@ -2,7 +2,7 @@ import { Restaurant } from '../components/RestaurantCardsContainer'
 import clientPromise from '../../lib/mongodb'
 import { SITE_DB_NAME } from '@/lib/utils'
 
-const excludedIds = ['flybar', 'the-daily']
+const excludedIds = ['flybar']
 
 export async function getTopRestaurantsLast24Hours() {
   const client = await clientPromise
