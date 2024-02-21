@@ -21,7 +21,7 @@ export const RestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> =
     <div className="flex flex-col justify-center gap-8 sm:gap-4 px-4 sm:px-0">
       {restaurants ? (
         <div className="flex flex-col justify-center gap-8 sm:gap-4">
-          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-sm sm:max-w-xl mx-auto w-full mt-0 sm:mt-20">
+          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-sm sm:max-w-xl mx-auto w-full mt-6 sm:mt-14">
             <p className="text-center text-white text-light text-2xl sm:text-4xl flex flex-col pb-4">
               {title}
               <span className="text-xs text-gray-600 sm:text-base">{subtitle}</span>
@@ -49,7 +49,7 @@ export const NewRestaurantCardsContainer: React.FC<RestaurantCardsContainerProps
     <div className="flex flex-col justify-center gap-8 sm:gap-4 px-4 sm:px-0">
       {restaurants ? (
         <div className="flex flex-col justify-center gap-8 sm:gap-4">
-          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-sm sm:max-w-xl mx-auto w-full mt-0 sm:mt-20">
+          <div className="flex flex-col justify-center gap-1 sm:gap-1 max-w-sm sm:max-w-xl mx-auto w-full mt-6 sm:mt-14">
             <p className="text-center text-white text-light text-2xl sm:text-4xl flex flex-col pb-4">
               {title}
               <span className="text-xs text-gray-600 sm:text-base">{subtitle}</span>

@@ -183,7 +183,10 @@ export default async function Home() {
         <div className="bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
           <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
             {count ? (
-              <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} />
+              // <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} />
+              <h2 className="text-center font-light text-base tracking-tighter text-gray-500 sm:text-xl">
+                <span className="text-white font-regular">{count} $FLY</span> per check in today
+              </h2>
             ) : (
               <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
                 No FLYcast submitted yet for {today}
@@ -200,7 +203,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className='mt-6'>
+      <div className='mt-6 sm:mt-0'>
         <RestaurantCardsContainer restaurants={topRestaurants} title="Top 10" subtitle={`12AM UTC ${startOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} — 12AM UTC ${endOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}`} />
       </div>
     </div>
