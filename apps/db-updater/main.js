@@ -285,13 +285,14 @@ async function findUniqueRestaurants(nftMetadata) {
       continue
     }
 
-    const { restaurantName, restaurantId, accessLevel, memberStatus, image, imageArtist } = nftData
+    const { restaurantName, restaurantId, accessLevel, memberStatus, image, location, imageArtist } = nftData
 
     // Ensure the restaurant is uniquely identified by its ID
     if (!uniqueRestaurants.has(restaurantId)) {
       uniqueRestaurants.set(restaurantId, {
         restaurantId,
         restaurantName: restaurantName,
+        location,
         accessLevels: {},
       })
     }
@@ -301,7 +302,7 @@ async function findUniqueRestaurants(nftMetadata) {
     // Initialize or update the details for this access level
     const levelKey = String(accessLevel)
     restaurant.accessLevels[levelKey] = {
-      count: 0, // count will get updated in addStatsToRestaurants() at the bottom of main()
+      count: 0, // count will get updated later
       memberStatus,
       image,
       imageArtist,
@@ -575,19 +576,20 @@ async function initializeTiers() {
 
     // Organize access levels by level
     let accessLevels = {}
+    let restaurantLocation = ''
     for (const membership of memberships) {
-      const { accessLevel, image, imageArtist, memberStatus } = membership
-
+      const { accessLevel, image, imageArtist, memberStatus, location } = membership
+      restaurantLocation = location
       // If this is the first membership of its access level, initialize the tier
       if (!accessLevels[accessLevel]) {
         accessLevels[accessLevel] = { image, imageArtist, memberStatus, count: 0, whiteText: true, accent: '#ffffff' }
       }
     }
 
-    // Update the restaurant document with the organized access levels
+    // Update the restaurant document with the organized access levels and location
     const updateResult = await db
       .collection('restaurants')
-      .updateOne({ restaurantId }, { $set: { accessLevels } }, { upsert: true })
+      .updateOne({ restaurantId }, { $set: { accessLevels, location: restaurantLocation } }, { upsert: true })
 
     console.log(`Updated restaurantId ${restaurantId} with access levels:`, updateResult)
   }
