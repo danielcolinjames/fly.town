@@ -221,7 +221,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className='mt-6 sm:mt-0'>
+      <div className='mt-0 sm:mt-0'>
         <RestaurantCardsContainer restaurants={topRestaurants} title="Top 10" subtitle={adjustedSubtitleUTC} />
       </div>
     </div>
