@@ -141,7 +141,7 @@ export default async function Home() {
   const count = data?.count ?? undefined
   const timestamp = data?.timestamp ?? undefined
 
-  const topRestaurants24h = await getTopRestaurantsLast24Hours()
+  const { topRestaurants, endOfRange, startOfRange } = await getTopRestaurantsLast24Hours()
   const mostRecentCheckin = await getMostRecentCheckin()
 
   const totalCheckins = mostRecentCheckin?.checkinId ? mostRecentCheckin.checkinId : 0
@@ -201,7 +201,7 @@ export default async function Home() {
         </div>
       </div>
       <div className='mt-8 sm:mt-14'>
-        <RestaurantCardsContainer restaurants={topRestaurants24h} title="Top 10" subtitle="Last 24h" />
+        <RestaurantCardsContainer restaurants={topRestaurants} title="Top 10" subtitle={`12AM UTC ${startOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} — 12AM UTC ${endOfRange.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}`} />
       </div>
     </div>
   )
