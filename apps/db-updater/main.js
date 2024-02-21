@@ -56,6 +56,8 @@ async function main() {
   console.log('Fetching and processing IPFS data...')
   await fetchAndPublishIPFSDataInBatches(pendingHashes)
 
+  await initializeTiers()
+
   await updateLatestMembershipDetailsToTiers()
 
   // 9)
@@ -558,40 +560,38 @@ async function enhanceRestaurants() {
     // await updateTierLevelColors(restaurantId, uniqueAccessLevels)
 
     // // Update counts for each tier level
-    // await updateTierLevelCounts(restaurantId)
-
+    await updateTierLevelCounts(restaurantId)
     await updateRestaurantTierDetails(restaurantId)
   }
 }
 
-// async function initializeTiers() {
-//   const db = await database()
-//   const uniqueRestaurantIds = await db.collection('memberships').distinct('restaurantId')
+async function initializeTiers() {
+  const db = await database()
+  const uniqueRestaurantIds = await db.collection('memberships').distinct('restaurantId')
 
-//   for (const restaurantId of uniqueRestaurantIds) {
-//     // Fetch all memberships for this restaurantId
-//     const memberships = await db.collection('memberships').find({ restaurantId }).toArray()
+  for (const restaurantId of uniqueRestaurantIds) {
+    // Fetch all memberships for this restaurantId
+    const memberships = await db.collection('memberships').find({ restaurantId }).toArray()
 
-//     // Organize access levels by level
-//     let accessLevels = {}
-//     for (const membership of memberships) {
-//       const { accessLevel, image, imageArtist, memberStatus } = membership
-//       const levelKey = `accessLevels.${accessLevel}`
+    // Organize access levels by level
+    let accessLevels = {}
+    for (const membership of memberships) {
+      const { accessLevel, image, imageArtist, memberStatus } = membership
 
-//       // If this is the first membership of its access level, initialize the tier
-//       if (!accessLevels[accessLevel]) {
-//         accessLevels[accessLevel] = { image, imageArtist, memberStatus }
-//       }
-//     }
+      // If this is the first membership of its access level, initialize the tier
+      if (!accessLevels[accessLevel]) {
+        accessLevels[accessLevel] = { image, imageArtist, memberStatus, count: 0, whiteText: true, accent: '#ffffff' }
+      }
+    }
 
-//     // Update the restaurant document with the organized access levels
-//     const updateResult = await db
-//       .collection('restaurants')
-//       .updateOne({ restaurantId }, { $set: { accessLevels } }, { upsert: true })
+    // Update the restaurant document with the organized access levels
+    const updateResult = await db
+      .collection('restaurants')
+      .updateOne({ restaurantId }, { $set: { accessLevels } }, { upsert: true })
 
-//     console.log(`Updated restaurantId ${restaurantId} with access levels:`, updateResult)
-//   }
-// }
+    console.log(`Updated restaurantId ${restaurantId} with access levels:`, updateResult)
+  }
+}
 
 async function updateRestaurantTierDetails(restaurantId) {
   const db = await database()
@@ -603,18 +603,15 @@ async function updateRestaurantTierDetails(restaurantId) {
     const details = restaurant.accessLevels[level]
 
     try {
-      // Process image and get new details
       const newDetails = await processImageForTier(details.image)
 
       const updateObject = {}
       for (const key in newDetails) {
         if (newDetails[key] !== undefined) {
-          // Ensure we're not setting undefined values
           updateObject[`accessLevels.${level}.${key}`] = newDetails[key]
         }
       }
 
-      // Log for debugging
       console.log(`Updating restaurantId: ${restaurantId}, level: ${level} with:`, updateObject)
       await db.collection('restaurants').updateOne({ restaurantId }, { $set: updateObject })
     } catch (error) {
@@ -653,7 +650,7 @@ async function updateTierLevelCounts(restaurantId) {
     .aggregate([{ $match: { restaurantId } }, { $group: { _id: '$accessLevel', count: { $sum: 1 } } }])
     .toArray()
 
-  countsPerAccessLevel.forEach(async ({ _id, count }) => {
+  for (const { _id, count } of countsPerAccessLevel) {
     console.log(`Updating restaurantId: ${restaurantId}, level: ${_id} with count: ${count}`)
     await db
       .collection('restaurants')
@@ -661,7 +658,7 @@ async function updateTierLevelCounts(restaurantId) {
         { restaurantId, [`accessLevels.${_id}`]: { $exists: true } },
         { $set: { [`accessLevels.${_id}.count`]: count } }
       )
-  })
+  }
 }
 
 function shouldBeWhiteText(backgroundColor, contrastThreshold = 2) {
