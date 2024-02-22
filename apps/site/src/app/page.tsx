@@ -7,6 +7,7 @@ import { getTopRestaurantsLast24Hours } from './data/restaurants'
 import { SITE_DB_NAME } from '@/lib/utils'
 import { Nfc, PersonStanding } from 'lucide-react'
 import { StatCard } from '@/components/StatCard'
+import { addDays } from 'date-fns'
 
 const redis = new Redis({
   url: 'https://light-bass-33631.upstash.io',
@@ -178,7 +179,7 @@ export default async function Home() {
   const iconSize = 24
   // Note: The incoming date is assumed to be in UTC. The displayed times for startOfRange and endOfRange will also be in UTC for consistency.
   const formatEndRangeUTC = (date: Date) => {
-    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })} at ${date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, timeZone: 'UTC' })}`;
+    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}`;
   };
 
   const formatStartRangeUTC = (date: Date) => {
@@ -186,7 +187,8 @@ export default async function Home() {
   }
 
   // Adjusted subtitle to include formatted start and end of range in UTC
-  const adjustedSubtitleUTC = `By check ins between ${formatStartRangeUTC(startOfRange)} — ${formatEndRangeUTC(endOfRange)} (UTC)`;
+  const nycTimezoneString = 'America/New_York';
+  const adjustedSubtitleUTC = `By check ins between ${formatEndRangeUTC(startOfRange)} 5AM ET — ${formatEndRangeUTC(endOfRange)} 5AM ET`;
 
   // const formatLocalDateTime = (date: Date) => {
   //   return `${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} at ${date.toLocaleTimeString(undefined, { hour: 'numeric', hour12: true })}`;
@@ -195,20 +197,10 @@ export default async function Home() {
   // // Adjusted subtitle to include formatted start and end of range
   // const adjustedSubtitle = `By check ins between ${formatLocalDateTime(startOfRange)} — ${formatLocalDateTime(endOfRange)}`;
 
-  if (count === undefined) {
-    return (
-      <div className="flex w-full flex-col pb-14 sm:pb-32">
-        <div className="flex flex-col justify-center items-center">
-          <div className="bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
-            <div>No FLYcast submitted yet for {today}</div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  const flycast = count
 
-  const countInteger = Math.floor(count)
-  const countDecimal = (count - countInteger).toFixed(2).split('.')[1]
+  const countInteger = Math.floor(flycast ?? 0)
+  const countDecimal = (flycast ?? 0 - countInteger).toFixed(2).split('.')[1]
 
   return (
     <div className="flex w-full flex-col pb-14 sm:pb-32">
@@ -241,7 +233,7 @@ export default async function Home() {
         </div>
       </div>
       <div className='mt-0 sm:mt-0'>
-        <RestaurantCardsContainer restaurants={topRestaurants} title="Top 10" subtitle={adjustedSubtitleUTC} />
+        <RestaurantCardsContainer restaurants={topRestaurants} title="Top restaurants" subtitle={adjustedSubtitleUTC} />
       </div>
     </div>
   )
