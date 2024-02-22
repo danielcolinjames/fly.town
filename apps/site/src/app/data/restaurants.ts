@@ -1,17 +1,33 @@
 import { Restaurant } from '../components/RestaurantCardsContainer'
 import clientPromise from '../../lib/mongodb'
 import { SITE_DB_NAME } from '@/lib/utils'
+import { startOfDay, addHours, addDays } from 'date-fns'
 
 const excludedIds = ['flybar']
+
+const getTimezoneOffset = (timezone: string) => {
+  // This is a placeholder function. You'll need to implement timezone offset calculation
+  // or lookup based on the timezone you're working with. This might involve using a third-party
+  // service or a library that can provide this information.
+  return -5 // Example: Offset for Eastern Time (UTC-5)
+}
+
+const getStartOfTodayUTCForTimezone = (timezone: string) => {
+  const now = new Date()
+  const timezoneOffset = getTimezoneOffset(timezone)
+  const startOfTodayLocal = startOfDay(now)
+  const startOfTodayLocalAt10AM = addHours(startOfTodayLocal, 10 + timezoneOffset)
+  return startOfTodayLocalAt10AM
+}
+
+// Calculate start and end times
+const timezone = 'America/New_York' // Example timezone
+const startOfTodayUTC = getStartOfTodayUTCForTimezone(timezone)
+const endOfTodayUTC = addHours(addDays(startOfTodayUTC, 1), 10)
 
 export async function getTopRestaurantsLast24Hours() {
   const client = await clientPromise
   const db = client.db(SITE_DB_NAME)
-  // Create a date object for 10 AM UTC of the current day
-  const startOfTodayUTC = new Date(new Date().setUTCHours(10, 0, 0, 0))
-  // Create a date object for 10 AM UTC of the next day
-  const endOfTodayUTC = new Date(new Date().setUTCHours(10, 0, 0, 0))
-  endOfTodayUTC.setDate(endOfTodayUTC.getDate() + 1)
 
   const topRestaurants = await db
     .collection('checkIns')
