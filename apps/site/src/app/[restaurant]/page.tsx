@@ -2,7 +2,7 @@ import clientPromise from '../../lib/mongodb'
 import { Navbar } from '@/components/Navbar'
 import type { Metadata } from 'next'
 import { AccessLevelDetails, getData } from './getData'
-import { CalendarDays, CalendarHeart, Clock, Flag, Nfc, PersonStanding, Stamp } from 'lucide-react'
+import { CalendarDays, CalendarHeart, Clock, Flag, List, Nfc, PersonStanding, Stamp } from 'lucide-react'
 import { MembershipsSection } from './components/MembershipsSection'
 import { RestaurantTitleSection } from './components/RestaurantTitleSection'
 import { SITE_DB_NAME } from '@/lib/utils'
@@ -104,7 +104,7 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
             highestValueKeyAccent={highestValueKeyAccent}
             restaurantName={restaurantName}
             location={location}
-            // subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
+          // subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
           />
           {/* <Heatmap checkInsData={checkInsHeatmapData} /> */}
           <MembershipsSection
@@ -122,7 +122,10 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
               >
                 <Flag size={iconSize} />
               </StatCard>
-              <StatCard title="Lifetime check ins" statText={checkinCount.toLocaleString()}>
+              <StatCard
+                title="Most recent check in"
+                statText={mostRecentCheckinDate ? formatDistanceToNow(new Date(mostRecentCheckinDate), { addSuffix: true }) : 'N/A'}
+              >
                 <Nfc size={iconSize} />
               </StatCard>
               <StatCard title="Last 24h check ins" statText={checkinsLast24h.toLocaleString()}>
@@ -130,6 +133,9 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
               </StatCard>
               <StatCard title="Last 30d check ins" statText={checkinsLastMonth.toLocaleString()}>
                 <CalendarDays size={iconSize} />
+              </StatCard>
+              <StatCard title="Lifetime check ins" statText={checkinCount.toLocaleString()}>
+                <List size={iconSize} />
               </StatCard>
               <StatCard title="Members" statText={numberOfMemberships.toLocaleString()}>
                 <PersonStanding size={iconSize} />

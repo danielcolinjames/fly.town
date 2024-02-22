@@ -6,12 +6,13 @@ import { format } from 'date-fns/format'
 import { subHours, startOfToday, addDays } from 'date-fns'
 import { UTCDate } from '@date-fns/utc'
 
+const DEV_MODE_OFFSET = process.env.NODE_ENV === 'development' ? 5 : 0
 // Calculate the current time in UTC
 const nowUTC = new UTCDate()
 
 // Calculate the start of today in UTC and subtract 5 hours to align with 5 AM ET / 10 AM UTC
 const startOfTodayUTC = startOfToday()
-const adjustedStartOfToday = subHours(startOfTodayUTC, -10)
+const adjustedStartOfToday = subHours(startOfTodayUTC, -10 + DEV_MODE_OFFSET)
 
 // Determine if the current UTC time is before or after 10 AM UTC
 let startOfRangeRaw: Date

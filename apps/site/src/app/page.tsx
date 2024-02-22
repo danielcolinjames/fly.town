@@ -222,7 +222,7 @@ export default async function Home() {
               <GlobalStatCard title="$FLY per check in today" statText={`${count}`} icon={<Rocket />} />
               {/* <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} /> */}
               <GlobalStatCard title="Total check ins today" statText={`${totalCheckinsToday.totalCheckIns.toLocaleString()}`} icon={<Nfc />} />
-              <GlobalStatCard title="Total members" statText={`${totalMembershipsCount.toLocaleString()}`} icon={<PersonStanding />} />
+              <GlobalStatCard title="Total memberships" statText={`${totalMembershipsCount.toLocaleString()}`} icon={<PersonStanding />} />
               {/* <div className="flex flex-col">
                 <span className="relative text-white text-center font-regular text-3xl sm:text-5xl">
                   {totalCheckinsToday.totalCheckIns}
