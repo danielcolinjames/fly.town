@@ -139,7 +139,7 @@ async function getTotalMembershipsCount() {
 
 export default async function Home() {
   const data = await getData()
-  const count = 750// data?.count ?? undefined
+  const count = data?.count ?? undefined
   const timestamp = data?.timestamp ?? undefined
 
   const { topRestaurants, endOfRange, startOfRange } = await getTopRestaurantsLast24Hours()
