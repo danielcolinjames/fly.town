@@ -1,29 +1,33 @@
 import { Restaurant } from '../components/RestaurantCardsContainer'
 import clientPromise from '../../lib/mongodb'
 import { SITE_DB_NAME } from '@/lib/utils'
-import { startOfDay, addHours, addDays } from 'date-fns'
+import { ignoredRestaurantIds } from '../lib/ignored'
+import { format } from 'date-fns/format'
+import { subHours, startOfToday, addDays } from 'date-fns'
 
-const excludedIds = ['flybar']
+// Calculate the current time in UTC
+const nowUTC = new Date()
 
-const getTimezoneOffset = (timezone: string) => {
-  // This is a placeholder function. You'll need to implement timezone offset calculation
-  // or lookup based on the timezone you're working with. This might involve using a third-party
-  // service or a library that can provide this information.
-  return -5 // Example: Offset for Eastern Time (UTC-5)
+// Calculate the start of today in UTC and subtract 5 hours to align with 5 AM ET / 10 AM UTC
+const startOfTodayUTC = startOfToday()
+const adjustedStartOfToday = subHours(startOfTodayUTC, 5)
+
+// Determine if the current UTC time is before or after 10 AM UTC
+let startOfRangeRaw: Date
+if (nowUTC >= adjustedStartOfToday) {
+  // If after 10 AM UTC, the range starts from the adjusted start of today
+  startOfRangeRaw = adjustedStartOfToday
+} else {
+  // If before 10 AM UTC, the range starts from the adjusted start of the previous day
+  startOfRangeRaw = subHours(startOfTodayUTC, 29) // 24 hours + 5 hours
 }
 
-const getStartOfTodayUTCForTimezone = (timezone: string) => {
-  const now = new Date()
-  const timezoneOffset = getTimezoneOffset(timezone)
-  const startOfTodayLocal = startOfDay(now)
-  const startOfTodayLocalAt10AM = addHours(startOfTodayLocal, 10 + timezoneOffset)
-  return startOfTodayLocalAt10AM
-}
+// The end of range is always 24 hours after the start of range
+export const startOfRange: Date = startOfRangeRaw
+export const endOfRange: Date = addDays(startOfRange, 1)
 
-// Calculate start and end times
-const timezone = 'America/New_York' // Example timezone
-const startOfTodayUTC = getStartOfTodayUTCForTimezone(timezone)
-const endOfTodayUTC = addHours(addDays(startOfTodayUTC, 1), 10)
+console.log(`Start of Range: ${format(startOfRange, "yyyy-MM-dd HH:mm:ss'Z'", {})}`)
+console.log(`End of Range: ${format(endOfRange, "yyyy-MM-dd HH:mm:ss'Z'", {})}`)
 
 export async function getTopRestaurantsLast24Hours() {
   const client = await clientPromise
@@ -42,9 +46,9 @@ export async function getTopRestaurantsLast24Hours() {
       },
       {
         $match: {
-          createdAtDate: { $gte: startOfTodayUTC, $lt: endOfTodayUTC },
+          createdAtDate: { $gte: startOfRange, $lt: endOfRange },
           // Exclude documents with restaurantId in excludedIds
-          restaurantId: { $nin: excludedIds },
+          restaurantId: { $nin: ignoredRestaurantIds },
         },
       },
       {
@@ -84,7 +88,7 @@ export async function getTopRestaurantsLast24Hours() {
   // Filter out any null entries from the results
   return {
     topRestaurants: restaurantDetails.filter((detail): detail is Restaurant => detail !== null),
-    startOfRange: startOfTodayUTC,
-    endOfRange: endOfTodayUTC,
+    startOfRange: startOfRange,
+    endOfRange: endOfRange,
   }
 }
