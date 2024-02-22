@@ -4,13 +4,14 @@ import { SITE_DB_NAME } from '@/lib/utils'
 import { ignoredRestaurantIds } from '../lib/ignored'
 import { format } from 'date-fns/format'
 import { subHours, startOfToday, addDays } from 'date-fns'
+import { UTCDate } from '@date-fns/utc'
 
 // Calculate the current time in UTC
-const nowUTC = new Date()
+const nowUTC = new UTCDate()
 
 // Calculate the start of today in UTC and subtract 5 hours to align with 5 AM ET / 10 AM UTC
 const startOfTodayUTC = startOfToday()
-const adjustedStartOfToday = subHours(startOfTodayUTC, 5)
+const adjustedStartOfToday = subHours(startOfTodayUTC, -10)
 
 // Determine if the current UTC time is before or after 10 AM UTC
 let startOfRangeRaw: Date
@@ -19,7 +20,7 @@ if (nowUTC >= adjustedStartOfToday) {
   startOfRangeRaw = adjustedStartOfToday
 } else {
   // If before 10 AM UTC, the range starts from the adjusted start of the previous day
-  startOfRangeRaw = subHours(startOfTodayUTC, 29) // 24 hours + 5 hours
+  startOfRangeRaw = subHours(startOfTodayUTC, 14)
 }
 
 // The end of range is always 24 hours after the start of range
