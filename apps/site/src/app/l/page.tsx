@@ -1,8 +1,10 @@
 import clientPromise from '../../lib/mongodb'
 import { SITE_DB_NAME } from '@/lib/utils'
-import { NewRestaurantCardsContainer, Restaurant, RestaurantCardsContainer } from '../components/RestaurantCardsContainer'
-
-
+import {
+  NewRestaurantCardsContainer,
+  Restaurant,
+  RestaurantCardsContainer,
+} from '../components/RestaurantCardsContainer'
 
 async function getData() {
   try {
@@ -39,7 +41,7 @@ async function getData() {
             restaurantName: '$restaurantDetails.restaurantName',
             firstCheckInDate: 1,
             accessLevels: '$restaurantDetails.accessLevels', // Assuming this field exists
-            totalCheckins: '$restaurantDetails.totalCheckins' // Assuming this field exists or you can calculate it        
+            totalCheckins: '$restaurantDetails.totalCheckins', // Assuming this field exists or you can calculate it
           },
         },
       ])
@@ -59,8 +61,12 @@ export default async function LatestPage() {
   const recentFirstCheckIns = data.recentFirstCheckIns as Restaurant[]
 
   return (
-    <div className='pb-14 sm:pb-32 pt-14'>
-      <NewRestaurantCardsContainer restaurants={recentFirstCheckIns} title="Newest restaurants" subtitle="By recency of first check in" />
+    <div className="pb-14 sm:pb-32 pt-14">
+      <NewRestaurantCardsContainer
+        restaurants={recentFirstCheckIns}
+        title="Newest restaurants"
+        subtitle="By recency of first check in"
+      />
     </div>
   )
 }

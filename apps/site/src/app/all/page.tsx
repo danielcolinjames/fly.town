@@ -60,7 +60,7 @@ export default async function Home() {
   const restaurants = await getRestaurantsSortedByCheckins()
 
   return (
-    <div className='pb-14 sm:pb-32 pt-14'>
+    <div className="pb-14 sm:pb-32 pt-14">
       <RestaurantCardsContainer
         restaurants={restaurants}
         title="All restaurants"

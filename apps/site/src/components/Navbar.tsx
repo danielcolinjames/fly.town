@@ -12,9 +12,19 @@ export const Navbar = () => {
             <span className="text-gray-600">.town</span>
           </p>
         </Link>
-        <div className='flex flex-row gap-2 items-center justify-center'>
-          <Link href="/l" className="items-center justify-center gap-2 grayscale opacity-0 hover:opacity-100 duration-1000 p-2">😮</Link>
-          <Link href="/all" className="items-center justify-center gap-2 grayscale opacity-0 hover:opacity-100 duration-1000 p-2">🤫</Link>
+        <div className="flex flex-row gap-2 items-center justify-center">
+          <Link
+            href="/l"
+            className="items-center justify-center gap-2 grayscale opacity-0 hover:opacity-100 duration-1000 p-2"
+          >
+            😮
+          </Link>
+          <Link
+            href="/all"
+            className="items-center justify-center gap-2 grayscale opacity-0 hover:opacity-100 duration-1000 p-2"
+          >
+            🤫
+          </Link>
         </div>
       </div>
     </div>

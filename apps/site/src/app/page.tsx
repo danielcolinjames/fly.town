@@ -148,12 +148,12 @@ export default async function Home() {
   const totalCheckins = mostRecentCheckin?.checkinId ? mostRecentCheckin.checkinId : 0
   const totalUpdatedAt = mostRecentCheckin?.date
     ? new Date(mostRecentCheckin.date)
-      .toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      })
-      .replace(/^0+/, '')
+        .toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+        .replace(/^0+/, '')
     : undefined
 
   const totalMembershipsCount = await getTotalMembershipsCount()
@@ -179,16 +179,16 @@ export default async function Home() {
   const iconSize = 24
   // Note: The incoming date is assumed to be in UTC. The displayed times for startOfRange and endOfRange will also be in UTC for consistency.
   const formatEndRangeUTC = (date: Date) => {
-    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}`;
-  };
+    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}`
+  }
 
   const formatStartRangeUTC = (date: Date) => {
-    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}`;
+    return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}`
   }
 
   // Adjusted subtitle to include formatted start and end of range in UTC
-  const nycTimezoneString = 'America/New_York';
-  const adjustedSubtitleUTC = `By check ins between ${formatEndRangeUTC(startOfRange)} 5AM ET — ${formatEndRangeUTC(endOfRange)} 5AM ET`;
+  const nycTimezoneString = 'America/New_York'
+  const adjustedSubtitleUTC = `By check ins between ${formatEndRangeUTC(startOfRange)} 5AM ET — ${formatEndRangeUTC(endOfRange)} 5AM ET`
 
   // const formatLocalDateTime = (date: Date) => {
   //   return `${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} at ${date.toLocaleTimeString(undefined, { hour: 'numeric', hour12: true })}`;
@@ -208,9 +208,11 @@ export default async function Home() {
         <div className="bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
           <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
             {count ? (
-              <div className='flex flex-col'>
+              <div className="flex flex-col">
                 {/* <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} /> */}
-                <span className="relative text-white text-center font-regular text-3xl sm:text-5xl">{countInteger}<span className='text-gray-400 text-lg absolute bottom-0 w-auto'>.{countDecimal}</span>
+                <span className="relative text-white text-center font-regular text-3xl sm:text-5xl">
+                  {countInteger}
+                  <span className="text-gray-400 text-lg absolute bottom-0 w-auto">.{countDecimal}</span>
                 </span>
                 <h2 className="text-center font-light text-base tracking-tighter text-gray-500 sm:text-lg">
                   $FLY per check in today
@@ -232,7 +234,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className='mt-0 sm:mt-0'>
+      <div className="mt-0 sm:mt-0">
         <RestaurantCardsContainer restaurants={topRestaurants} title="Top restaurants" subtitle={adjustedSubtitleUTC} />
       </div>
     </div>

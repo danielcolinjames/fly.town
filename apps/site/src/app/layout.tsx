@@ -38,9 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ) : null}
         <main className="min-h-screen bg-[#0b0b0b] relative">
           <Navbar />
-          <div className="w-full pt-[45px] sm:pt-[50px]">
-            {children}
-          </div>
+          <div className="w-full pt-[45px] sm:pt-[50px]">{children}</div>
           <Footer />
         </main>
         <SpeedInsights />

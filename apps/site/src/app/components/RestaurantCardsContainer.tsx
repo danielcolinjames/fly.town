@@ -1,6 +1,6 @@
 import React from 'react'
 import { AccessLevel, RestaurantCard } from './RestaurantCard'
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns'
 
 export type Restaurant = {
   restaurantId: string
@@ -44,7 +44,11 @@ export const RestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> =
   )
 }
 
-export const NewRestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> = ({ restaurants, title, subtitle }) => {
+export const NewRestaurantCardsContainer: React.FC<RestaurantCardsContainerProps> = ({
+  restaurants,
+  title,
+  subtitle,
+}) => {
   return (
     <div className="flex flex-col justify-center gap-8 sm:gap-4 px-4 sm:px-0">
       {restaurants ? (
@@ -57,9 +61,17 @@ export const NewRestaurantCardsContainer: React.FC<RestaurantCardsContainerProps
             <div className="flex flex-col justify-center gap-2 sm:gap-4 max-w-2xl mx-auto w-full">
               {restaurants.map((restaurant, index) => {
                 const timestamp = restaurant.firstCheckInDate
-                const firstCheckInDate = timestamp ? formatDistanceToNow(new Date(timestamp), { addSuffix: true }) : 'N/A'
+                const firstCheckInDate = timestamp
+                  ? formatDistanceToNow(new Date(timestamp), { addSuffix: true })
+                  : 'N/A'
                 return (
-                  <RestaurantCard key={index} restaurant={restaurant} index={index} subtitle={`First check in ${firstCheckInDate}`} hideCrown />
+                  <RestaurantCard
+                    key={index}
+                    restaurant={restaurant}
+                    index={index}
+                    subtitle={`First check in ${firstCheckInDate}`}
+                    hideCrown
+                  />
                 )
               })}
             </div>

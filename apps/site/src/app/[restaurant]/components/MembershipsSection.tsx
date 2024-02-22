@@ -47,15 +47,15 @@ export const MembershipsSection = ({
     // <motion.div
     <div
       className="py-4 sm:py-10 bg-[#040404] border-y border-[#202020] w-full"
-    // style={{ borderColor: `${highestValueKeyAccent}ff` }}
-    // layoutId={`restaurant-card-${restaurantId}`}
+      // style={{ borderColor: `${highestValueKeyAccent}ff` }}
+      // layoutId={`restaurant-card-${restaurantId}`}
     >
       <p className="text-left sm:pb-5 max-w-3xl mx-auto px-8 sm:text-center font-light text-xl sm:text-2xl flex flex-col pb-6 pt-2 text-[#727272]">
         Membership Tiers
       </p>
       <div className="flex flex-col md:flex-row justify-center items-start px-8 gap-8 sm:gap-4 w-full">
         {Object.entries(accessLevels).map(([level, details], index, { length }) => (
-          <div key={index} className="rounded-lg shadow-xl gap-4" >
+          <div key={index} className="rounded-lg shadow-xl gap-4">
             {/* <motion.img */}
             <img
               src={details.image}
@@ -64,7 +64,7 @@ export const MembershipsSection = ({
               className="rounded-lg"
               width={imageWidth}
               height={imageHeight}
-            // style={{ boxShadow: `0 0 110px ${details.accent}28` }}
+              // style={{ boxShadow: `0 0 110px ${details.accent}28` }}
             />
             <div className="flex flex-col items-center justify-center pt-0 sm:pt-2 gap-0 sm:gap-0">
               <p className="text-gray-700 justify-center text-left sm:text-center hover:text-brandYellow mt-1 transition-all duration-200">
@@ -74,7 +74,9 @@ export const MembershipsSection = ({
                 <p className="text-gray-400 text-lg sm:text-xl font-light">{level}</p>
                 <p className="text-white text-lg sm:text-xl font-semibold">{details.memberStatus}</p>
               </div>
-              <p style={{ color: details.accent }} className="text-lg sm:text-xl font-light">{details.count.toLocaleString()} members</p>
+              <p style={{ color: details.accent }} className="text-lg sm:text-xl font-light">
+                {details.count.toLocaleString()} members
+              </p>
             </div>
           </div>
         ))}

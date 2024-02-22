@@ -28,26 +28,26 @@ export const RestaurantTitleSection = ({
       >
         &larr; Top 10
       </Link>
-      <span
-        className="text-left text-5xl text-white sm:text-7xl"
-      >
-        {restaurantName}
-      </span>
-      {subtitle && (<p className="text-left text-xl text-gray-400 sm:text-2xl">
-        {subtitle}
-      </p>)}
+      <span className="text-left text-5xl text-white sm:text-7xl">{restaurantName}</span>
+      {subtitle && <p className="text-left text-xl text-gray-400 sm:text-2xl">{subtitle}</p>}
       <div className="flex flex-col justify-center gap-1 rounded-full">
         {parsedLocations.length > 1 && (
-          <div className='flex flex-row items-center'>
-            <span className='text-gray-500 text-sm sm:text-lg'>{parsedLocations.length} locations</span>
+          <div className="flex flex-row items-center">
+            <span className="text-gray-500 text-sm sm:text-lg">{parsedLocations.length} locations</span>
           </div>
         )}
-        <div className='flex flex-col gap-1'>
-          {parsedLocations.map((location) => {
+        <div className="flex flex-col gap-1">
+          {parsedLocations.map(location => {
             return (
-              <div className='flex flex-row items-center gap-1 sm:gap-2'>
-                <MapPin className='text-gray-500 size-4 sm:size-5' style={{ color: highestValueKeyAccent }} />
-                <span style={{ color: highestValueKeyAccent }} key={location.streetAddress} className="text-gray-500 text-base sm:text-xl">{location.streetAddress}, {location.state}</span>
+              <div className="flex flex-row items-center gap-1 sm:gap-2">
+                <MapPin className="text-gray-500 size-4 sm:size-5" style={{ color: highestValueKeyAccent }} />
+                <span
+                  style={{ color: highestValueKeyAccent }}
+                  key={location.streetAddress}
+                  className="text-gray-500 text-base sm:text-xl"
+                >
+                  {location.streetAddress}, {location.state}
+                </span>
               </div>
             )
           })}

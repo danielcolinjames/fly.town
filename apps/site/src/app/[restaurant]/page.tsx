@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const restaurantId = params.restaurant
   const { accessLevels, restaurantName } = await getMetadataData(restaurantId)
   const accessLevelImages = Object.values(accessLevels).map(details => details.image)
-  const strippedAccessLevelImages = accessLevelImages.map((imageUrl) => {
+  const strippedAccessLevelImages = accessLevelImages.map(imageUrl => {
     return imageUrl?.replace(/^https:\/\/images\.blackbird\.xyz/, '')
   })
   const concatenatedImages = strippedAccessLevelImages.join(',')
@@ -84,13 +84,16 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
 
   const iconSize = 24
 
-  const highestValueKeyAccent = Object.entries(accessLevels).reduce((acc, [key, value]) => {
-    const keyValue = parseInt(key, 10);
-    if (keyValue > acc.highestValue) {
-      return { highestValue: keyValue, accent: value.accent };
-    }
-    return acc;
-  }, { highestValue: 0, accent: '' }).accent;
+  const highestValueKeyAccent = Object.entries(accessLevels).reduce(
+    (acc, [key, value]) => {
+      const keyValue = parseInt(key, 10)
+      if (keyValue > acc.highestValue) {
+        return { highestValue: keyValue, accent: value.accent }
+      }
+      return acc
+    },
+    { highestValue: 0, accent: '' }
+  ).accent
 
   return (
     <div className="flex w-full flex-col pb-14 sm:pb-32" style={{ backgroundColor: `${highestValueKeyAccent}00` }}>
@@ -101,19 +104,25 @@ export default async function RestaurantPage({ params }: { params: { restaurant:
             highestValueKeyAccent={highestValueKeyAccent}
             restaurantName={restaurantName}
             location={location}
-          // subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
+            // subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
           />
           {/* <Heatmap checkInsData={checkInsHeatmapData} /> */}
-          <MembershipsSection accessLevels={accessLevels} restaurantId={restaurantId} highestValueKeyAccent={highestValueKeyAccent} />
+          <MembershipsSection
+            accessLevels={accessLevels}
+            restaurantId={restaurantId}
+            highestValueKeyAccent={highestValueKeyAccent}
+          />
           <div className="text-gray-200 pt-8 sm:pt-10 max-w-3xl mx-auto px-2 sm:px-8">
             <div className="grid sm:grid-cols-2 gap-4">
-              <StatCard title="First check in" statText={firstCheckinDate ? formatDistanceToNow(new Date(firstCheckinDate), { addSuffix: true }) : 'N/A'}>
+              <StatCard
+                title="First check in"
+                statText={
+                  firstCheckinDate ? formatDistanceToNow(new Date(firstCheckinDate), { addSuffix: true }) : 'N/A'
+                }
+              >
                 <Flag size={iconSize} />
               </StatCard>
-              <StatCard
-                title="Lifetime check ins"
-                statText={checkinCount.toLocaleString()}
-              >
+              <StatCard title="Lifetime check ins" statText={checkinCount.toLocaleString()}>
                 <Nfc size={iconSize} />
               </StatCard>
               <StatCard title="Last 24h check ins" statText={checkinsLast24h.toLocaleString()}>
