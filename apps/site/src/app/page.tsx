@@ -3,9 +3,9 @@ import { Redis } from '@upstash/redis'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import { RestaurantCardsContainer } from './components/RestaurantCardsContainer'
-import { getTopRestaurantsLast24Hours } from './data/restaurants'
+import { getTopRestaurantsLast24Hours, getTotalCheckInsForRange } from './data/restaurants'
 import { SITE_DB_NAME } from '@/lib/utils'
-import { Nfc, PersonStanding } from 'lucide-react'
+import { Nfc, PersonStanding, Rocket, RocketIcon } from 'lucide-react'
 import { StatCard } from '@/components/StatCard'
 import { addDays } from 'date-fns'
 
@@ -139,7 +139,7 @@ async function getTotalMembershipsCount() {
 
 export default async function Home() {
   const data = await getData()
-  const count = data?.count ?? undefined
+  const count = 750// data?.count ?? undefined
   const timestamp = data?.timestamp ?? undefined
 
   const { topRestaurants, endOfRange, startOfRange } = await getTopRestaurantsLast24Hours()
@@ -148,12 +148,12 @@ export default async function Home() {
   const totalCheckins = mostRecentCheckin?.checkinId ? mostRecentCheckin.checkinId : 0
   const totalUpdatedAt = mostRecentCheckin?.date
     ? new Date(mostRecentCheckin.date)
-        .toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        })
-        .replace(/^0+/, '')
+      .toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      })
+      .replace(/^0+/, '')
     : undefined
 
   const totalMembershipsCount = await getTotalMembershipsCount()
@@ -196,6 +196,7 @@ export default async function Home() {
 
   // // Adjusted subtitle to include formatted start and end of range
   // const adjustedSubtitle = `By check ins between ${formatLocalDateTime(startOfRange)} — ${formatLocalDateTime(endOfRange)}`;
+  const totalCheckinsToday = await getTotalCheckInsForRange()
 
   const flycast = count
 
@@ -205,11 +206,11 @@ export default async function Home() {
   return (
     <div className="flex w-full flex-col pb-14 sm:pb-32">
       <div className="flex flex-col justify-center items-center">
-        <div className="bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
-          <div className="flex flex-col gap-8 items-center justify-between mx-auto max-w-xl w-full">
-            {count ? (
-              <div className="flex flex-col">
-                {/* <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} /> */}
+        <div className="flex flex-col items-center justify-between mx-auto w-full">
+          {count ? (
+            <div className="flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-4 px-4 pt-10 w-full max-w-sm sm:max-w-lg md:max-w-4xl">
+              {/* <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} /> */}
+              {/* <div className="flex flex-col">
                 <span className="relative text-white text-center font-regular text-3xl sm:text-5xl">
                   {countInteger}
                   <span className="text-gray-400 text-lg absolute bottom-0 w-auto">.{countDecimal}</span>
@@ -217,13 +218,30 @@ export default async function Home() {
                 <h2 className="text-center font-light text-base tracking-tighter text-gray-500 sm:text-lg">
                   $FLY per check in today
                 </h2>
-              </div>
-            ) : (
-              <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
-                No FLYcast submitted yet for {today}
-              </h2>
-            )}
-            {/* <div className="flex flex-row gap-4 w-full px-8">
+              </div> */}
+              <GlobalStatCard title="$FLY per check in today" statText={`${count}`} icon={<Rocket />} />
+              {/* <HeroStatCard count={count} latestTime={latestTime} title="$FLY per check in today" today={today} /> */}
+              <GlobalStatCard title="Total check ins today" statText={`${totalCheckinsToday.totalCheckIns.toLocaleString()}`} icon={<Nfc />} />
+              <GlobalStatCard title="Total members" statText={`${totalMembershipsCount.toLocaleString()}`} icon={<PersonStanding />} />
+              {/* <div className="flex flex-col">
+                <span className="relative text-white text-center font-regular text-3xl sm:text-5xl">
+                  {totalCheckinsToday.totalCheckIns}
+                </span>
+                <h2 className="text-center font-light text-base tracking-tighter text-gray-500 sm:text-lg">
+                  Total check ins today
+                </h2>
+              </div> */}
+            </div>
+          ) : (
+            <div className='pt-2 sm:pt-8' />
+          )}
+          {/* // <div className="bg-[#070707] border-[#202020] border-y w-full text-white py-4 sm:py-8">
+            //   <h2 className="text-center font-light text-base italic tracking-tighter text-gray-500 sm:text-xl">
+            //     No FLYcast submitted yet for {today}
+            //   </h2>
+            // </div>
+          // )} */}
+          {/* <div className="flex flex-row gap-4 w-full px-8">
               <StatCard title="Members" statText={totalMembershipsCount.toLocaleString()}>
                 <PersonStanding size={iconSize} />
               </StatCard>
@@ -231,10 +249,17 @@ export default async function Home() {
                 <Nfc size={iconSize} />
               </StatCard>
             </div> */}
-          </div>
         </div>
       </div>
-      <div className="mt-0 sm:mt-0">
+      {/* <div className='flex flex-col items-center w-full mx-auto pt-4 sm:pt-14'>
+        <p className='text-gray-400 text-center'>
+          Total check ins today
+        </p>
+        <p className='text-white  text-2xl'>
+          {totalCheckinsToday.totalCheckIns}
+        </p>
+      </div> */}
+      <div className="mt-4">
         <RestaurantCardsContainer restaurants={topRestaurants} title="Top restaurants" subtitle={adjustedSubtitleUTC} />
       </div>
     </div>
@@ -270,3 +295,20 @@ const HeroStatCard = ({
     </div>
   )
 }
+
+const GlobalStatCard = ({ title, statText, icon }: { title: string, statText: string, icon: React.ReactNode }) => {
+  return (
+    <div className="flex flex-col items-center justify-center gap-1 bg-[#070707] border-[#202020] border-y w-full text-white px-4 py-5 rounded-xl min-w-[80px] sm:min-w-[225px]">
+      {/* <div className="flex flex-row items-center justify-center gap-2 w-auto">
+    {icon}
+  </div> */}
+      <div className="flex flex-col w-full gap-1">
+        <p className="text-center text-sm text-gray-600 w-full">{title}</p>
+        <h1 className="text-center text-white font-light tracking-tighter text-3xl sm:text-5xl">
+          {statText}
+        </h1>
+      </div>
+    </div>
+  )
+}
+

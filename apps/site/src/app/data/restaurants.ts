@@ -93,3 +93,39 @@ export async function getTopRestaurantsLast24Hours() {
     endOfRange: endOfRange,
   }
 }
+
+export async function getTotalCheckInsForRange() {
+  const client = await clientPromise
+  const db = client.db(SITE_DB_NAME)
+
+  const totalCheckIns = await db
+    .collection('checkIns')
+    .aggregate([
+      {
+        $addFields: {
+          // Convert createdAt from string to date
+          createdAtDate: { $dateFromString: { dateString: '$createdAt' } },
+        },
+      },
+      {
+        $match: {
+          createdAtDate: { $gte: startOfRange, $lt: endOfRange },
+          // Optionally, exclude documents with restaurantId in excludedIds if needed
+          // restaurantId: { $nin: ignoredRestaurantIds },
+        },
+      },
+      {
+        $count: 'totalCheckIns',
+      },
+    ])
+    .toArray()
+
+  // The result will be an array with a single object if there are any check-ins, or an empty array if there are none.
+  const totalCheckInsCount = totalCheckIns.length > 0 ? totalCheckIns[0].totalCheckIns : 0
+
+  return {
+    totalCheckIns: totalCheckInsCount,
+    startOfRange: startOfRange,
+    endOfRange: endOfRange,
+  }
+}
