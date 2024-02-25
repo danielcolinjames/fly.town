@@ -1,23 +1,23 @@
-import clientPromise from '../../lib/mongodb'
-import { SITE_DB_NAME } from '@/lib/utils'
+import clientPromise from "../../lib/mongodb";
+import { SITE_DB_NAME } from "@/lib/utils";
 import {
   NewRestaurantCardsContainer,
   Restaurant,
   RestaurantCardsContainer,
-} from '../components/RestaurantCardsContainer'
+} from "../components/RestaurantCardsContainer";
 
 async function getData() {
   try {
-    const client = await clientPromise
-    const db = client.db(SITE_DB_NAME)
+    const client = await clientPromise;
+    const db = client.db(SITE_DB_NAME);
 
     const restaurantsSortedByFirstCheckIn = await db
-      .collection('checkIns')
+      .collection("checkIns")
       .aggregate([
         {
           $group: {
-            _id: '$restaurantId',
-            firstCheckInDate: { $min: '$createdAt' },
+            _id: "$restaurantId",
+            firstCheckInDate: { $min: "$createdAt" },
           },
         },
         {
@@ -25,40 +25,40 @@ async function getData() {
         },
         {
           $lookup: {
-            from: 'restaurants',
-            localField: '_id',
-            foreignField: 'restaurantId',
-            as: 'restaurantDetails',
+            from: "restaurants",
+            localField: "_id",
+            foreignField: "restaurantId",
+            as: "restaurantDetails",
           },
         },
         {
-          $unwind: '$restaurantDetails',
+          $unwind: "$restaurantDetails",
         },
         {
           $project: {
             _id: 0,
-            restaurantId: '$_id',
-            restaurantName: '$restaurantDetails.restaurantName',
+            restaurantId: "$_id",
+            restaurantName: "$restaurantDetails.restaurantName",
             firstCheckInDate: 1,
-            accessLevels: '$restaurantDetails.accessLevels', // Assuming this field exists
-            totalCheckins: '$restaurantDetails.totalCheckins', // Assuming this field exists or you can calculate it
+            accessLevels: "$restaurantDetails.accessLevels", // Assuming this field exists
+            totalCheckins: "$restaurantDetails.totalCheckins", // Assuming this field exists or you can calculate it
           },
         },
       ])
-      .toArray()
+      .toArray();
     return {
       recentFirstCheckIns: restaurantsSortedByFirstCheckIn || [],
-    }
+    };
   } catch (e) {
-    console.error(e)
+    console.error(e);
     return {
       recentFirstCheckIns: [],
-    }
+    };
   }
 }
 export default async function LatestPage() {
-  const data = await getData()
-  const recentFirstCheckIns = data.recentFirstCheckIns as Restaurant[]
+  const data = await getData();
+  const recentFirstCheckIns = data.recentFirstCheckIns as Restaurant[];
 
   return (
     <div className="pb-14 sm:pb-32 pt-14">
@@ -68,5 +68,5 @@ export default async function LatestPage() {
         subtitle="By recency of first check in"
       />
     </div>
-  )
+  );
 }

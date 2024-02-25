@@ -11,13 +11,14 @@ export const Footer = () => {
           by dcj
         </a>
         <p className="text-center text-[8px] sm:text-xs text-gray-700">|</p>
-        <p className="text-center text-[8px] sm:text-xs text-gray-600 opacity-60">
+        <p className="text-center text-[8px] sm:text-xs text-[#727272] opacity-60">
           fly.town is not endorsed by or associated with Blackbird Labs Inc.
         </p>
       </div>
-      <p className="text-center text-[8px] sm:text-xs text-gray-500 px-4">
-        if things seem jank or broken, they definitely are :) please tag @dcj on Discord if you have ideas for ways to make fly.town better
+      <p className="text-center text-[8px] sm:text-xs text-[#727272] px-4">
+        if things seem jank or broken, they definitely are :) please tag @dcj on
+        Discord if you have ideas for ways to make fly.town better
       </p>
     </div>
-  )
-}
+  );
+};

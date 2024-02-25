@@ -5,6 +5,8 @@
 //   enter: { opacity: 1, x: 0, y: 0 },
 // }
 
+import React from "react";
+
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
     // <motion.main
@@ -15,5 +17,5 @@ export default function Template({ children }: { children: React.ReactNode }) {
     // >
     <div>{children}</div>
     // </motion.main>
-  )
+  );
 }

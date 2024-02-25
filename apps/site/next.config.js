@@ -3,11 +3,11 @@ module.exports = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.blackbird.xyz',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "images.blackbird.xyz",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
-}
+};

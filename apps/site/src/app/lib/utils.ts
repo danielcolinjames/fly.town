@@ -1,20 +1,24 @@
 export function formatDate(dateInput: string | number | Date) {
-  const date = new Date(dateInput)
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
-  let formattedDate = date.toLocaleDateString('en-US', options)
+  const date = new Date(dateInput);
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  let formattedDate = date.toLocaleDateString("en-US", options);
 
   // Add ordinal suffixes
-  const day = date.getDate()
-  let suffix = 'th'
+  const day = date.getDate();
+  let suffix = "th";
   if (day % 10 === 1 && day !== 11) {
-    suffix = 'st'
+    suffix = "st";
   } else if (day % 10 === 2 && day !== 12) {
-    suffix = 'nd'
+    suffix = "nd";
   } else if (day % 10 === 3 && day !== 13) {
-    suffix = 'rd'
+    suffix = "rd";
   }
   // Replace the day number with the day number + suffix
-  formattedDate = formattedDate.replace(/\d+/, `${day}${suffix}`)
+  formattedDate = formattedDate.replace(/\d+/, `${day}${suffix}`);
 
-  return formattedDate
+  return formattedDate;
 }
