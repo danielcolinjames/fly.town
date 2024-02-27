@@ -72,6 +72,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: "en_US",
       type: "website",
     },
+    twitter: {
+      card: "summary_large_image",
+      site: "fly.town",
+      description: `${restaurantName}'s profile on fly.town`,
+      title: `${restaurantName} - fly.town`,
+      images: [ogUrl],
+    },
   };
 }
 
@@ -129,7 +136,7 @@ export default async function RestaurantPage({
             highestValueKeyAccent={highestValueKeyAccent}
             restaurantName={restaurantName}
             location={location}
-            // subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
+          // subtitle={`${checkinCount.toLocaleString()} lifetime check ins`}
           />
           {/* <Heatmap checkInsData={checkInsHeatmapData} /> */}
           <MembershipsSection
@@ -144,8 +151,8 @@ export default async function RestaurantPage({
                 statText={
                   firstCheckinDate
                     ? formatDistanceToNow(new Date(firstCheckinDate), {
-                        addSuffix: true,
-                      })
+                      addSuffix: true,
+                    })
                     : "N/A"
                 }
               >
@@ -156,8 +163,8 @@ export default async function RestaurantPage({
                 statText={
                   mostRecentCheckinDate
                     ? formatDistanceToNow(new Date(mostRecentCheckinDate), {
-                        addSuffix: true,
-                      })
+                      addSuffix: true,
+                    })
                     : "N/A"
                 }
               >

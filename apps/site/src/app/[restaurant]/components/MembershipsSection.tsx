@@ -1,21 +1,24 @@
-// 'use client'
+'use client'
 import Image from "next/image";
 
 import { AccessLevelDetails } from "../getData";
+import React from "react";
 // import { motion } from 'framer-motion'
 
 export const MembershipsSection = ({
   accessLevels,
   restaurantId,
   highestValueKeyAccent,
+  loading,
 }: {
-  accessLevels: AccessLevelDetails;
-  restaurantId: string;
-  highestValueKeyAccent: string;
+  accessLevels?: AccessLevelDetails;
+  restaurantId?: string;
+  highestValueKeyAccent?: string;
+  loading?: boolean;
 }) => {
   const totalWidth = 836;
   const totalHeight = 630;
-  const numberOfImages = Object.keys(accessLevels).length;
+  const numberOfImages = Object.keys(accessLevels ?? {}).length;
 
   const originalWidth = 343;
   const originalHeight = 490;
@@ -44,10 +47,53 @@ export const MembershipsSection = ({
     marginLeft = -requiredOverlapPerImage; // Apply as negative margin to each image except the first
   }
 
-  const { image, memberStatus, accent, whiteText } = accessLevels;
+  const [flip, setFlip] = React.useState(false);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setFlip(f => !f);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || flip) {
+    return (
+      <div
+        className="w-full border-y border-[#202020] bg-[#040404] py-4 sm:py-10">
+        <p className="mx-auto flex max-w-3xl flex-col px-8 pb-6 pt-2 text-left text-xl font-light text-[#727272] sm:pb-5 sm:text-center sm:text-2xl">
+          Membership Tiers
+        </p>
+        <div className="flex w-full flex-col items-start justify-center gap-8 px-8 sm:gap-4 md:flex-row">
+          <div className="w-auto min-h-[630px] bg-[#272727] rounded-lg" />
+          <div className="w-auto min-h-[630px] bg-[#272727] rounded-lg" />
+        </div>
+        <div className="flex flex-col items-center justify-center gap-0 pt-0 sm:gap-0 sm:pt-2">
+          <p className="hover:text-brandYellow mt-1 justify-center text-left text-gray-700 transition-all duration-200 sm:text-center">
+            Artist:
+          </p>
+          <div className="flex justify-start gap-2 sm:justify-center">
+            <p className="text-lg font-light text-[#B5B5B5] sm:text-xl">
+              1
+            </p>
+            <p className="text-lg font-semibold text-white sm:text-xl">
+              Tier 1
+            </p>
+          </div>
+          <p
+            // style={{ color: details.accent }}
+            className="text-lg font-light sm:text-xl"
+          >
+            {/* {details.count.toLocaleString()} members */}
+            1 members
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // const { image, memberStatus, accent, whiteText } = accessLevels;
 
   return (
-    // <motion.div
     <div
       className="w-full border-y border-[#202020] bg-[#040404] py-4 sm:py-10"
     // style={{ borderColor: `${highestValueKeyAccent}ff` }}
@@ -57,7 +103,7 @@ export const MembershipsSection = ({
         Membership Tiers
       </p>
       <div className="flex w-full flex-col items-start justify-center gap-8 px-8 sm:gap-4 md:flex-row">
-        {Object.entries(accessLevels).map(
+        {Object.entries(accessLevels ?? {}).map(
           ([level, details], index, { length }) => (
             <div key={index} className="gap-4 rounded-lg shadow-xl">
               <Image
@@ -67,6 +113,7 @@ export const MembershipsSection = ({
                 className="rounded-lg"
                 width={imageWidth}
                 height={imageHeight}
+                style={{ maxHeight: `${imageHeight}px` }}
               // style={{ boxShadow: `0 0 110px ${details.accent}28` }}
               />
               <div className="flex flex-col items-center justify-center gap-0 pt-0 sm:gap-0 sm:pt-2">
@@ -92,7 +139,6 @@ export const MembershipsSection = ({
           ),
         )}
       </div>
-      {/* </motion.div> */}
     </div>
   );
 };

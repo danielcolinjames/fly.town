@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   openGraph: {
     images: "https://fly.town/og2.png",
   },
+  twitter: {
+    card: "summary_large_image",
+    site: "fly.town",
+    description: `fly.town`,
+    title: `fly.town`,
+    images: ["https://fly.town/og2.png"],
+  },
 };
 
 import localFont from "next/font/local";
