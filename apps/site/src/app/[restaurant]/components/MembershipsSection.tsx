@@ -1,4 +1,3 @@
-'use client'
 import Image from "next/image";
 
 import { AccessLevelDetails } from "../getData";
@@ -47,16 +46,7 @@ export const MembershipsSection = ({
     marginLeft = -requiredOverlapPerImage; // Apply as negative margin to each image except the first
   }
 
-  const [flip, setFlip] = React.useState(false);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setFlip(f => !f);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading || flip) {
+  if (loading) {
     return (
       <div
         className="w-full border-y border-[#202020] bg-[#040404] py-4 sm:py-10">
