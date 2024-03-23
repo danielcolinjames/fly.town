@@ -233,7 +233,7 @@ const nftAbi = [
     stateMutability: "view",
     type: "function",
   },
-];
+]
 
 const publishAbi = [
   {
@@ -298,6 +298,6 @@ const publishAbi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+]
 
-module.exports = { nftAbi, publishAbi };
+module.exports = { nftAbi, publishAbi }
